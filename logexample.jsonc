@@ -1,0 +1,38 @@
+[
+{
+    "sessionId" : "374856738412",   //хочу щоб кожен новий istance лог-клієнта передавав своє унікальне id
+    "logId" : "00001",
+    "timestamp" : 	"1775910918",
+    "type" : "alert",    //хочу зробити розбиття на alert / error / data і від цього потім плесать
+    "service" : "parser",   //хочу щоб при імпорті лог-клієнта задавалась назва сервісу який буде логувати
+    "metadata" : {      // весь основинй payload: level, message, module і т. д.
+        "level" : "info", // info / event / warn / transition / etc.
+        "message" : "Parser initialized",
+        "module" : "/services/parser/index.js"
+    }
+},
+{
+    "sessionId" : "374856738412",
+    "logId" : "00002",
+    "timestamp" : 	"1775910918",
+    "type" : "error",
+    "service" : "parser",
+    "metadata" : {
+        "severity" : "4" // від 0 до 10
+    }
+},
+{
+    "sessionId" : "374856738412",
+    "logId" : "00003",
+    "timestamp" : 	"1775910918",
+    "level" : "data",
+    "service" : "parser",
+    "metadata" : {
+        "view" : {
+            "type" : "table",
+            "columns" : ["name", "price", "stock"] 
+        },
+        "data" : []
+    }
+}
+]
