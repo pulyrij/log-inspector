@@ -1,12 +1,13 @@
 {
   "name": "logger",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "logger.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "author": "",
+  "author": "pulyrij",
   "license": "ISC",
   "description": ""
 }

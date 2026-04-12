@@ -4,6 +4,9 @@ const PORT = 3000;
 
 const server = http.createServer((req, res) => {
     if (req.method === 'POST' && req.url === '/logs') {
+
+        let body = "";
+        
         req.on('data', chunk => {
             body += chunk;
         });
