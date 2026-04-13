@@ -104,7 +104,7 @@ export default function logPipeline(log){
 
     const logRecord = transformRawLog(log);
     console.log(logRecord);
-    
+
     store.add(logRecord);
     return {
         statusCode: 200,
@@ -112,5 +112,42 @@ export default function logPipeline(log){
             ok: true,
             id: logRecord.id
         }))
+    }
+}
+
+function getLogs() {
+    return store.logs;
+}
+
+function createLogViewModel(log) {
+    const date = new Date(log.timestamp);
+
+    return {
+        id: log.id,
+
+        header: {
+            time: date.toLocaleTimeString(),
+            message: log.message,
+            service: log.service
+        },
+
+        layouts: [
+            {
+                name: 'meta',
+                date: date.toLocaleDateString(),
+                module: log.module,
+                level: log.level,
+                pid: log.pid,
+                host: log.hostname,
+            }
+        ],
+
+        ui: {
+            expendedLayouts: {
+                meta: false
+            },
+            type: log.type,
+            level: log.level,
+        }
     }
 }
