@@ -9,5 +9,10 @@
   },
   "author": "pulyrij",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "puppeteer": "^24.40.0",
+    "ws": "^8.20.0"
+  }
 }
