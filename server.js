@@ -1,4 +1,5 @@
 import http from 'http';
+import logPipeline from './log-engine.js';
 
 const PORT = 3000;
 
@@ -16,10 +17,10 @@ const server = http.createServer((req, res) => {
                 const log = JSON.parse(body);
 
                 console.log('LOG RECEIVED');
-                console.log(log);
+                const result = logPipeline(log);
 
-                res.writeHead(204);
-                res.end();
+                res.writeHead(result.statusCode);
+                res.end(result.end);
             } catch (err) {
 
                 res.writeHead(400);

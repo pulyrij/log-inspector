@@ -35,39 +35,82 @@ const logRecord = {
 // invalid log if !type, !timestamp, !message, !sessionId, !logId
 // всі інші значення за відсутності повинні замінятися дефолтними значеннями
 
-function validate(log) {
-    if (!log.type || typeof log.type !== 'string' ||
-        (log.type !== 'alert' && log.type !== 'error' && log.type !== 'data')
-    ) return {
-        isValid: false,
-        reason: 'invalid type'
+const LOG_TYPES = ['alert', 'error', 'data'];
+
+const store = {
+    logs: [],
+
+    add(logRecord) {
+        this.logs.push(logRecord);
     }
-    if (!log.timestamp || typeof log.timestamp !== 'number' ||
-        String(log.timestamp).length !== 13
-    ) return {
-        isValid: false,
-        reason: 'invalid timestamp'
+};
+
+function validateRawLog(log) {
+    if (!log || typeof log !== 'object') {
+        return {
+            isValid: false,
+            errors: ['log must be an object']
+        }
     }
-    if (!log.message || typeof log.message !== 'string' || 
-        log.message.length < 1
-    ) return {
-        isValid: false,
-        reason: 'invalid message'
+
+    const errors = [];
+    
+    if (typeof log.sessionId !== 'number') {
+        errors.push('sessionId must be a number');
     }
-    if (!log.sessionId || typeof log.sessionId !== 'Number' ||
-        String(log.sessionId).length !== 12 
-    ) return {
-        isValid: false,
-        reason: 'invalid sessionId'
+    if (typeof log.logId !== 'number' || log.logId <= 0) {
+        errors.push('logId must be a positive number')
     }
-    if (!log.logId || typeof log.logId !== 'Number' ||
-        log.logId < 1 || log.logId > 9999
-    ) return {
-        isValid: false,
-        reason: 'invalid logId'
+    if (!LOG_TYPES.includes(log.type)) {
+        errors.push(`type must be one of ${LOG_TYPES.join(', ')}`);
     }
+    if (!log?.metadata?.message || typeof log.metadata.message !== 'string') {
+        errors.push('metadata.message is required and must be a string');
+    }
+
     return {
-        isValid: true,
-        reason: null
+        isValid: errors.length === 0,
+        errors
+    }
+}
+
+function transformRawLog(log) {
+    const id = `${log.sessionId}${String(log.logId).padStart(4, '0')}`;
+    return {
+        id,
+        timestamp: log.timestamp,
+        sessionId: log.sessionId,
+        pid:  log.pid ?? 0,
+        hostname : log.hostname ?? 'host',
+        type: log.type,
+        service: log.service ?? 'application',
+        module: log.module ?? '/',
+        level: log.level ?? 'info',
+        message: log.metadata.message
+    }
+}
+
+export default function logPipeline(log){
+    const result = validateRawLog(log);
+    if (!result.isValid) {
+        return {
+            statusCode: 400,
+            end: (JSON.stringify({
+                ok: false,
+                errors: result.errors
+            }))
+        }
+    }
+
+    const logRecord = transformRawLog(log);
+    console.log(logRecord);
+    
+    store.add(logRecord);
+    return {
+        statusCode: 200,
+        end: (JSON.stringify({
+            ok: true,
+            id: logRecord.id
+        }))
     }
 }
