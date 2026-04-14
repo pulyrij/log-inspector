@@ -134,5 +134,5 @@ function broadcast(viewModel) {
         if (client.readyState === 1) {
             client.send(message);
         }
-    })
+    });
 }
