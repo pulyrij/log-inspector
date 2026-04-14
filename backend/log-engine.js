@@ -1,39 +1,10 @@
-const rawLog = {
-    "sessionId" : 374856738412,
-    "logId" : 1,
-    "timestamp" : 	1775910918000,
-    "pid" : 5343,
-    "hostname" : "linuxmint030",
-    "type" : "alert",
-    "service" : "parser",
-    "module" : "/services/parser/index.js",
-    "metadata" : {
-        "level" : "info",
-        "message" : "Parser initialized"
-    }
-}
-const logRecord = {
-    id: 3748567384120001, // session id + log id
+import { WebSocketServer } from 'ws';
 
-    //time
-    timestamp: 1775910918000,
-    date: '12-04-2026',
-    time: '18_39',
-
-    //session
-    sessionId: 374856738412,
-    pid: 5343,
-    hostname: "linuxmint030",
-
-    type: "alert",
-    service: "parser",
-    module: "/services/parser/index.js",
-    level: "info",
-    message: "Parser initialized",
-}
-
-// invalid log if !type, !timestamp, !message, !sessionId, !logId
-// всі інші значення за відсутності повинні замінятися дефолтними значеннями
+const PORT = 3001;
+const wss = new WebSocketServer({ port: PORT });
+wss.on('connection', () => {
+    console.log('Frontend connected');
+})
 
 const LOG_TYPES = ['alert', 'error', 'data'];
 
@@ -106,6 +77,8 @@ export default function logPipeline(log){
     console.log(logRecord);
 
     store.add(logRecord);
+    const viewModel = createLogViewModel(logRecord);
+    broadcast(viewModel);
     return {
         statusCode: 200,
         end: (JSON.stringify({
@@ -150,4 +123,16 @@ function createLogViewModel(log) {
             level: log.level,
         }
     }
+}
+
+function broadcast(viewModel) {
+    const message = JSON.stringify({
+        type: 'LOG',
+        payload: viewModel
+    });
+    wss.clients.forEach(client => {
+        if (client.readyState === 1) {
+            client.send(message);
+        }
+    })
 }
