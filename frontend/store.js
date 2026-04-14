@@ -1,14 +1,27 @@
-class Store {
+class State {
     constructor() {
-        this.store = [];
-        this.logSet = new Set();
+        this.store = new Map();
+        this.processed = new Set();
     }
     add(vm) {
-        if (!this.logSet.has(vm.id)) {
-            this.store.push(vm);
-            this.logSet.add(vm.id);
+        if (this.processed.has(vm.id)) return false;
+        
+        this.store.set(vm.id, vm);
+        
+        return true;
+    }
+    getPending() {
+        const result = [];
+
+        for (const [id, vm] of this.store) {
+            if (!this.processed.has(id)) {
+                result.push(vm);
+                this.processed.add(id);
+            }
         }
+        result.sort((a, b) => a.id - b.id);
+        return result;
     }
 }
-const store = new Store();
-export default store;
+const state = new State();
+export default state;

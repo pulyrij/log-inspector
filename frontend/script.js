@@ -1,5 +1,5 @@
 import createLogElement from './log-creator.js';
-import store from './store.js';
+import state from './store.js';
 
 const logContainer = document.getElementById('log-container');
 
@@ -20,7 +20,7 @@ socket.onmessage = (event) => {
     if (message.type === 'LOG') {
         const viewModel = message.payload;
 
-        store.add(viewModel);
+        state.add(viewModel);
         renderLog(viewModel);
     }
 };
