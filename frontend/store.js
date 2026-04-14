@@ -1,12 +1,13 @@
-class State {
+class Store {
     constructor() {
         this.store = new Map();
-        this.processed = new Set();
+        this.unprocessed = new Set();
     }
     add(vm) {
-        if (this.processed.has(vm.id)) return false;
+        if (this.store.has(vm.id)) return false;
         
         this.store.set(vm.id, vm);
+        this.unprocessed.add(vm.id);
         
         return true;
     }
@@ -14,14 +15,14 @@ class State {
         const result = [];
 
         for (const [id, vm] of this.store) {
-            if (!this.processed.has(id)) {
+            if (this.unprocessed.has(id)) {
                 result.push(vm);
-                this.processed.add(id);
+                this.unprocessed.delete(id);
             }
         }
         result.sort((a, b) => a.id - b.id);
         return result;
     }
 }
-const state = new State();
-export default state;
+const store = new Store();
+export default store;

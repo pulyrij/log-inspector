@@ -47,7 +47,8 @@ async function launchUI(webUrl) {
         defaultViewport: null
     });
 };
-export default async function bootstrapUI() {
+async function bootstrapUI() {
     const webUrl = await startStaticServer();
     await launchUI(webUrl);
 }
+await bootstrapUI();
