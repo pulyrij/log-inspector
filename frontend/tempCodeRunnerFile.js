@@ -12,23 +12,22 @@ async function startStaticServer() {
 
     return new Promise((resolve) => {
         const server = http.createServer((req, res) => {
-            const filePath = path.join(__dirname, req.url === '/' 
-                ? 'index.html'
-                : req.url
-            );
-            const ext = path.extname(filePath);
-            const mimeTypes = {
-                '.html': 'text/html',
-                '.js': 'application/javascript',
-                '.css': 'text/css',
-                '.json': 'application/json',
-                '.png': 'image/png'
+            if (req.url === '/' || req.url === '/index.html') {
+                const html = fs.readFileSync(path.join(__dirname, 'index.html'));
+                res.writeHead(200, {'Content-Type': 'text/html'});
+                res.end(html);
+                return;
             }
-            const contentType = mimeTypes[ext] || 'text/plain';
-
-            if (fs.existsSync(filePath)) {
-                res.writeHead(200, { 'Content-Type': contentType });
-                res.end(fs.readFileSync(filePath));
+            if (req.url === '/manifest.json') {
+                const manifest = fs.readFileSync(path.join(__dirname, 'manifest.json'));
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                res.end(manifest);
+                return;
+            }
+            if (req.url === '/icon192x192.png') {
+                const icon = fs.readFileSync(path.join(__dirname, 'icon192x192.png'));
+                res.writeHead(200, { 'Content-Type': 'image/png'});
+                res.end(icon);
                 return;
             }
             res.writeHead(404);
