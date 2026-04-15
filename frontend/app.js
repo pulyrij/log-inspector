@@ -1,6 +1,8 @@
 import store from './store.js';
-import './socket.js';
+import connect from './socket.js';
 import createLogElement from './log-creator.js';
+
+connect();
 
 const logContainer = document.getElementById('log-container');
 
