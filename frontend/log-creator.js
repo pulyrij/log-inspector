@@ -17,10 +17,20 @@ export default function createLogElement(vm) {
 
 function createHeader(vm) {
     const header = document.createElement('div');
-    header.className = 'log-header';
-    header.textContent = 
-        `${vm.header.time} | ${vm.header.service} | ${vm.header.message}`;
-    
+    header.classList.add('log-header');
+
+    const timeEl = header.appendChild(document.createElement('time'));
+    timeEl.dateTime = vm.header.datetime;
+    timeEl.textContent = vm.header.time;
+
+    const messageSpan = header.appendChild(document.createElement('span'));
+    messageSpan.classList.add('message');
+    messageSpan.textContent = vm.header.message;
+
+    const serviceSpan = header.appendChild(document.createElement('span'));
+    serviceSpan.classList.add('service');
+    serviceSpan.textContent = vm.header.service;
+
     return header;
 }
 

@@ -100,6 +100,7 @@ function createLogViewModel(log) {
 
         header: {
             time: date.toLocaleTimeString(),
+            datetime: new Date(log.timestamp).toLocaleString('sv-SE').replace(' ', 'T').slice(0, 16),
             message: log.message,
             service: log.service
         },
