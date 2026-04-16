@@ -4,10 +4,10 @@ export default function createLogElement(vm) {
     log.dataset.id = vm.id;
 
     const header = createHeader(vm);
-    header.addEventListener('click', () => {
-        toggleLayout(vm, layoutElement);
-    })
     const layouts = renderLayouts(vm);
+    header.addEventListener('click', () => {
+        toggleLayout(vm, 'meta', log);
+    })
 
     log.appendChild(header);
     log.appendChild(layouts);
@@ -34,6 +34,20 @@ function createHeader(vm) {
     return header;
 }
 
+function toggleLayout(vm, name, root) {
+    
+    const expanded = vm.ui.expandedLayouts[name] ?? false;
+
+    const next = !expanded;
+
+    vm.ui.expandedLayouts[name] = next;
+
+    const layout = root.querySelector(`.layout[data-name="${name}"]`);
+
+    if (layout) {
+        layout.hidden = !next;
+    }
+}
 function renderLayouts(vm) {
     const container = createLayoutsContainer();
 
