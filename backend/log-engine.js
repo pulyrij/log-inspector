@@ -93,14 +93,20 @@ function getLogs() {
 }
 
 function createLogViewModel(log) {
-    const date = new Date(log.timestamp);
+    const datetime = new Date(log.timestamp)
+        .toLocaleString('sv-SE')
+        .replace(' ', 'T')
+        .slice(0, 16);
+    const [date, time] = datetime.split('T');
 
     return {
         id: log.id,
+        type: log.type,
+        level: log.level,
+        datetime: datetime,
 
         header: {
-            time: date.toLocaleTimeString(),
-            datetime: new Date(log.timestamp).toLocaleString('sv-SE').replace(' ', 'T').slice(0, 16),
+            time: time,
             message: log.message,
             service: log.service
         },
@@ -108,20 +114,17 @@ function createLogViewModel(log) {
         layouts: [
             {
                 name: 'meta',
-                date: date.toLocaleDateString(),
+                date: date,
                 module: log.module,
-                level: log.level,
                 pid: log.pid,
-                host: log.hostname,
+                hostname: log.hostname,
             }
         ],
 
         ui: {
-            expendedLayouts: {
+            expandedLayouts: {
                 meta: false
-            },
-            type: log.type,
-            level: log.level,
+            }
         }
     }
 }

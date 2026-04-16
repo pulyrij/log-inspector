@@ -39,7 +39,11 @@ function renderLayouts(vm) {
 
     vm.layouts.forEach(layout => {
         const layoutElement = createLayout(layout, vm);
-        container.appendChild(layoutElement);
+        if (layoutElement) {
+            layoutElement.hidden = !vm.ui.expandedLayouts[layout.name];
+
+            container.appendChild(layoutElement);
+        }
     });
 
     return container;
@@ -51,18 +55,58 @@ function createLayoutsContainer() {
     return container;
 }
 
-function createLayout(layoutvm, vm) {
-    const layout = document.createElement('div');
-
-    layout.className = 'layout';
-    layout.dataset.name = layoutvm.name;
-
-    if(!vm.ui.expendedLayouts[layout.name]) {
-        layout.style.display = 'none';
+const layoutFactories = {
+        'meta': createMetaLayout,
+        'context': createContextLayout,
+        'error': createErrorLayout,
+        'error-cause': createErrorCauseLayout,
+        'stack-trace': createStackTraceLayout
     }
 
-    layout.textContent = 
-        `${layoutvm.date} | ${layoutvm.module} | ${layoutvm.level}`;
-    
+function createLayout(layoutVm, vm) {
+    const factory = layoutFactories[layoutVm.name];
+
+    if (!factory) {
+        console.error('Unknown layout:', layoutVm.name);
+        return null;
+    }
+
+    return factory(layoutVm, vm);
+}
+function createMetaLayout(layoutVm, vm) {
+    const layout = document.createElement('div');
+
+    layout.classList.add('layout', layoutVm.name);
+    layout.dataset.name = layoutVm.name;
+
+    const dateEl = layout.appendChild(document.createElement('time'));
+    dateEl.dateTime = vm.datetime;
+    dateEl.textContent = layoutVm.date;
+
+    const moduleSpan = layout.appendChild(document.createElement('span'));
+    moduleSpan.classList.add('module');
+    moduleSpan.textContent = layoutVm.module;
+
+    const typeSpan = layout.appendChild(document.createElement('span'));
+    typeSpan.classList.add('type');
+    typeSpan.textContent = vm.type;
+
+    const levelSpan = layout.appendChild(document.createElement('span'));
+    levelSpan.classList.add('level');
+    levelSpan.textContent = vm.level;
+
+    const hostnameSpan = layout.appendChild(document.createElement('span'));
+    hostnameSpan.classList.add('hostname');
+    hostnameSpan.textContent = layoutVm.hostname;
+
+    const pidSpan = layout.appendChild(document.createElement('span'));
+    pidSpan.classList.add('pid');
+    pidSpan.textContent = layoutVm.pid;
+
     return layout;
 }
+
+function createContextLayout() {}
+function createErrorLayout() {}
+function createErrorCauseLayout() {}
+function createStackTraceLayout() {}
