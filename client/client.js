@@ -30,5 +30,4 @@ async function sendLog(log) {
         body: JSON.stringify(log)
     });
 }
-
-sendLog(log);
+setInterval(async () => { await sendLog(log)}, 2000);
