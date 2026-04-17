@@ -119,6 +119,31 @@ function createMetaLayout(layoutVm, vm) {
 
     return layout;
 }
+function createDefinishionList(layoutVm, vm) {
+    
+}
+function createMetaItem(item, vm) {
+    const row = document.createElement('div');
+    row.classList.add('row');
+
+    const key = document.createElement('dt');
+    key.textContent = `${item.key}:`;
+
+    let value;
+
+    if (item.key === 'date' || item.key === 'time') {
+        value = document.createElement('time');
+        value.dateTime = vm.datetime;
+    } else {
+        value = document.createElement('div');
+    }
+    value.textContent = item.value;
+
+    row.appendChild(key);
+    row.appendChild(value);
+
+    return row;
+}
 
 function createContextLayout() {}
 function createErrorLayout() {}
