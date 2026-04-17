@@ -30,4 +30,20 @@ async function sendLog(log) {
         body: JSON.stringify(log)
     });
 }
-setInterval(async () => { await sendLog(log)}, 2000);
+setInterval(async () => {
+    const log = {
+        sessionId: randomId(),
+        logId: 1,
+        timestamp: Date.now(),
+        pid: process.pid,
+        hostname: 'DESKTOP-JF56S4',
+        type: 'alert',
+        service: 'logger',
+        module: '/logger/client.js',
+        metadata: {
+            level: 'info',
+            message: 'It works'
+        }
+    };
+     await sendLog(log)
+    }, 2000);

@@ -1,15 +1,30 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
 .log-container {
-    margin: 0 auto;
+    margin-inline: auto;
 
     width: 650px;
     max-width: 100%;
 
-    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 
     overflow-y: auto;
     overflow-x: hidden;
-}
 
+    contain: content;
+}
+.log {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    flex-shrink: 0;
+}
 .log-header {
     display: flex;
     align-items: center;
@@ -17,17 +32,18 @@
     gap: 8px;
     padding: 4px 8px;
 
-    font-family: system-ui; 
-    font-size: 14px;
-
     cursor: pointer;
     user-select: none;
+
+    min-width: 0;
 }
 .log-header time {
     flex-shrink: 0;
 }
 .log-header .message {
-    flex: 1;
+    flex: 1, 1, auto;
+
+    min-width: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -35,4 +51,7 @@
 .log-header .service {
     margin-left: auto;
     flex-shrink: 0;
+}
+.log-layouts {
+    min-width: 0;
 }
