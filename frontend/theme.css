@@ -1,0 +1,22 @@
+:root {
+    --font-main: system-ui;
+    --font-size: 14px;
+
+    --color-bg: #010d25;
+    --color-surface-2: #354b79;
+    --color-surface: #151f33;
+}
+
+body {
+    background-color: var(--color-bg);
+}
+.log-header {
+    background-color: var(--color-surface);
+}
+.log-header.alert.info {
+    color: rgb(20, 150, 96);
+    font-weight: bold;
+}
+.layout.meta {
+    background-color: var(--color-surface-2);
+}

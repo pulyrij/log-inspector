@@ -17,7 +17,7 @@ export default function createLogElement(vm) {
 
 function createHeader(vm) {
     const header = document.createElement('div');
-    header.classList.add('log-header');
+    header.classList.add('log-header', vm.type, vm.level);
 
     const timeEl = header.appendChild(document.createElement('time'));
     timeEl.dateTime = vm.header.datetime;
@@ -90,54 +90,53 @@ function createLayout(layoutVm, vm) {
 function createMetaLayout(layoutVm, vm) {
     const layout = document.createElement('div');
 
-    layout.classList.add('layout', layoutVm.name);
-    layout.dataset.name = layoutVm.name;
+    layout.classList.add('layout', 'meta');
+    layout.dataset.name = 'meta';
 
-    const dateEl = layout.appendChild(document.createElement('time'));
-    dateEl.dateTime = vm.datetime;
-    dateEl.textContent = layoutVm.date;
+    const metaList = createMetaList(layoutVm, vm);
 
-    const moduleSpan = layout.appendChild(document.createElement('span'));
-    moduleSpan.classList.add('module');
-    moduleSpan.textContent = layoutVm.module;
-
-    const typeSpan = layout.appendChild(document.createElement('span'));
-    typeSpan.classList.add('type');
-    typeSpan.textContent = vm.type;
-
-    const levelSpan = layout.appendChild(document.createElement('span'));
-    levelSpan.classList.add('level');
-    levelSpan.textContent = vm.level;
-
-    const hostnameSpan = layout.appendChild(document.createElement('span'));
-    hostnameSpan.classList.add('hostname');
-    hostnameSpan.textContent = layoutVm.hostname;
-
-    const pidSpan = layout.appendChild(document.createElement('span'));
-    pidSpan.classList.add('pid');
-    pidSpan.textContent = layoutVm.pid;
+    layout.appendChild(metaList);
 
     return layout;
 }
-function createDefinishionList(layoutVm, vm) {
-    
+function createMetaList(layoutVm, vm) {
+    const meta = [
+        {key: 'type', value: vm.type},
+        {key: 'level', value: vm.level},
+        {key: 'time', value: vm.header.time},
+        {key: 'date', value: layoutVm.date},
+        {key: 'message', value: vm.header.message},
+        {key: 'service', value: vm.header.service},
+        {key: 'module', value: layoutVm.module},
+        {key: 'hostname', value: layoutVm.hostname},
+        {key: 'pid', value: layoutVm.pid}
+    ];
+
+    const dl = document.createElement('dl');
+
+    meta.forEach(item => {
+        dl.appendChild(createMetaItem(item, vm));
+    });
+
+    return dl;
 }
 function createMetaItem(item, vm) {
     const row = document.createElement('div');
-    row.classList.add('row');
+    row.classList.add('meta-row');
 
     const key = document.createElement('dt');
+    key.classList.add('meta-key');
     key.textContent = `${item.key}:`;
 
-    let value;
-
+    const value = document.createElement('dd');
     if (item.key === 'date' || item.key === 'time') {
-        value = document.createElement('time');
-        value.dateTime = vm.datetime;
+        const timeValue = value.appendChild(document.createElement('time'));
+        timeValue.dateTime = vm.datetime;
+        timeValue.textContent = item.value;
     } else {
-        value = document.createElement('div');
+        value.textContent = item.value;
     }
-    value.textContent = item.value;
+    value.classList.add('meta-value');
 
     row.appendChild(key);
     row.appendChild(value);
