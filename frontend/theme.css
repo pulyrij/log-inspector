@@ -3,15 +3,23 @@
     --font-size: 14px;
 
     --color-bg: #010d25;
-    --color-surface-2: #354b79;
+    --color-surface-2: #9096a1;
+    --color-surface-1: #354b79;
     --color-surface: #151f33;
 }
 
 body {
     background-color: var(--color-bg);
 }
-.log-header {
+#log-container {
     background-color: var(--color-surface);
+}
+.log {
+    border-radius: 4px;
+    overflow: hidden;
+}
+.log-header {
+    background-color: var(--color-bg);
 }
 .log-header.alert.info {
     color: rgb(20, 150, 96);
