@@ -2,49 +2,13 @@ import store from './store.js';
 import connect from './socket.js';
 import createLogElement from './log-creator.js';
 
-connect();  
+connect();
 
-const scroller = document.getElementById('main');
 const logContainer = document.getElementById('log-container');
 
-let scrollPending = false;
-let userIsScrolling = false;
-let userScrollTimeout = null;
-
-scroller.addEventListener('wheel', () => {
-    userIsScrolling = true;
-    clearTimeout(userScrollTimeout);
-    userScrollTimeout = setTimeout(() => {
-        userIsScrolling = false;
-    }, 150);
-});
-
-scroller.addEventListener('touchmove', () => {
-    userIsScrolling = true;
-    clearTimeout(userScrollTimeout);
-    userScrollTimeout = setTimeout(() => {
-        userIsScrolling = false;
-    }, 150);
-});
-
-function processLogs() {
-    const logs = store.getPending();
-    
-    if (logs.length > 0) {
-        const shouldScroll = isAtBottom(scroller);
-
-        const fragment = document.createDocumentFragment();
-        logs.forEach(log => {
-            fragment.appendChild(createLogElement(log));
-        });
-        logContainer.appendChild(fragment);
-
-        if (shouldScroll) {
-            scroller.scrollTop = scroller.scrollHeight;
-        }
-    }
-
-    requestAnimationFrame(processLogs);
+function renderLog(viewModel) {
+    const logElement = createLogElement(viewModel);
+    logContainer.appendChild(logElement);
 }
 
 requestAnimationFrame(processLogs);
@@ -60,4 +24,4 @@ function scrollToBottom(el) {
         el.scrollTop = el.scrollHeight;
         scrollPanding = false;  
     });
-}
+};
