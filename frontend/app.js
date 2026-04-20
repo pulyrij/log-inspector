@@ -5,37 +5,59 @@ import createLogElement from './log-creator.js';
 connect();  
 
 const scroller = document.getElementById('main');
-
 const logContainer = document.getElementById('log-container');
 
-function renderLog(viewModel) {
-    const shouldScroll = isAtBottom(scroller);
+let scrollPending = false;
+let userIsScrolling = false;
+let userScrollTimeout = null;
 
-    const logElement = createLogElement(viewModel);
+scroller.addEventListener('wheel', () => {
+    userIsScrolling = true;
+    clearTimeout(userScrollTimeout);
+    userScrollTimeout = setTimeout(() => {
+        userIsScrolling = false;
+    }, 150);
+});
 
-    logContainer.appendChild(logElement);
+scroller.addEventListener('touchmove', () => {
+    userIsScrolling = true;
+    clearTimeout(userScrollTimeout);
+    userScrollTimeout = setTimeout(() => {
+        userIsScrolling = false;
+    }, 150);
+});
 
-    if (shouldScroll) {
-        scroller.scrollTop = scroller.scrollHeight;
+function processLogs() {
+    const logs = store.getPending();
+    
+    if (logs.length > 0) {
+        const shouldScroll = isAtBottom(scroller);
+
+        const fragment = document.createDocumentFragment();
+        logs.forEach(log => {
+            fragment.appendChild(createLogElement(log));
+        });
+        logContainer.appendChild(fragment);
+
+        if (shouldScroll) {
+            scroller.scrollTop = scroller.scrollHeight;
+        }
     }
+
+    requestAnimationFrame(processLogs);
 }
 
-setInterval(() => {
+requestAnimationFrame(processLogs);
 
-    const logs = store.getPending();
 
-    logs.forEach(log => {
-
-        renderLog(log);
-
+function isAtBottom(el, threshold = 80) {
+    return (el.scrollHeight - el.scrollTop - el.clientHeight) <= threshold;
+}
+function scrollToBottom(el) {
+    if (scrollPending) return;
+    scrollPanding = true;
+    requestAnimationFrame(() => {
+        el.scrollTop = el.scrollHeight;
+        scrollPanding = false;  
     });
-}, 100);
-
-function isAtBottom(el, threshold = 4) {
-    return (
-        el.scrollHeight
-    - el.scrollTop
-    - el.clientHeight
-    ) <= threshold;
-    
 }
