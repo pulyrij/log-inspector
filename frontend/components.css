@@ -103,15 +103,17 @@ html, body {
     display: grid;
     grid-template-rows: 0fr;
     transition: grid-template-rows 200ms ease-out;
+    padding: 0px 12px;
 }
 .layout > dl {
     overflow: hidden;
+    transition: padding 200ms ease-out;
 }
 .layout.expanded {
     grid-template-rows: 1fr;
 }
 .layout.expanded > dl {
-    padding: 8px 12px;
+    padding: 8px 0px;
 }
 .layout.meta dl {
     margin: 0;
