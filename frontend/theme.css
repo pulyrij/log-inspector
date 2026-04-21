@@ -11,12 +11,14 @@
 body {
     background-color: var(--color-bg);
 }
+#top-bar {
+    background-color: var(--color-surface);
+}
 #main {
-    scrollbar-width: thin;
-    scrollbar-color: var(--color-surface-1) transparent;
+    scrollbar-color: var(--color-surface) transparent;
 }
 #main::-webkit-scrollbar {
-    width: 6px;
+    width: 12px;
 }
 #main::-webkit-scrollbar-track {
     background: transparent;

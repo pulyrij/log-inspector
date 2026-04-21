@@ -22,6 +22,18 @@ html, body {
     display: flex;
     flex-direction: column;
     height: 100dvh;
+    gap: 8px;
+}
+#top-bar {
+    position: sticky;
+    height: 60px;
+
+    display: flex;
+    align-items: center;
+    padding-left: 16px;
+}
+#url {
+    color :rgb(189, 3, 80);
 }
 #main {
     flex: 1;
@@ -40,7 +52,8 @@ html, body {
     display: flex;
     flex-direction: column;
 
-    padding: 8px 4px 8px 8px;
+    min-height: 110%;
+    padding: 8px 4px 64px 8px;
     gap: 8px;
 
     overflow: visible;
@@ -86,7 +99,18 @@ html, body {
 .log-layouts {
     min-width: 0;
 }
-.layout.meta {
+.layout {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 200ms ease-out;
+}
+.layout > dl {
+    overflow: hidden;
+}
+.layout.expanded {
+    grid-template-rows: 1fr;
+}
+.layout.expanded > dl {
     padding: 8px 12px;
 }
 .layout.meta dl {

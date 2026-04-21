@@ -4,6 +4,8 @@ import createLogElement from './log-creator.js';
 
 connect();  
 
+document.getElementById('url').textContent = window.location.href;
+
 const scroller = document.getElementById('main');
 
 const logContainer = document.getElementById('log-container');
