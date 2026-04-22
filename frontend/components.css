@@ -14,25 +14,49 @@
 *::after {
     box-sizing: border-box;
 }
-#main {
-    margin-top: 25px;
+html, body {
+    margin: 0;
+    padding: 0;
 }
-#log-container {
-    margin-inline: auto;
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    gap: 8px;
+}
+#top-bar {
+    position: sticky;
+    height: 60px;
+
+    display: flex;
+    align-items: center;
+    padding-left: 16px;
+}
+#url {
+    color :rgb(189, 3, 80);
+}
+#main {
+    flex: 1;
+    min-height: 0;
 
     width: 650px;
     max-width: 100%;
+    margin-inline: auto;
 
-    height: 100dvh;
-
+    overscroll-behavior: contain;
+    scroll-behavior: auto;
+    overflow-y: scroll;
+    will-change: scroll-position;
+}
+#log-container {
     display: flex;
     flex-direction: column;
 
-    padding: 8px;
+    min-height: 110%;
+    padding: 8px 8px 64px 8px;
     gap: 8px;
 
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: visible;
 
     contain: content;
 }
@@ -75,8 +99,21 @@
 .log-layouts {
     min-width: 0;
 }
-.layout.meta {
-    padding: 8px 12px;
+.layout {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 200ms ease-out;
+    padding: 0px 12px;
+}
+.layout > dl {
+    overflow: hidden;
+    transition: padding 200ms ease-out;
+}
+.layout.expanded {
+    grid-template-rows: 1fr;
+}
+.layout.expanded > dl {
+    padding: 8px 0px;
 }
 .layout.meta dl {
     margin: 0;

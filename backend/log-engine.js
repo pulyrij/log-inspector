@@ -56,7 +56,7 @@ function transformRawLog(log) {
         type: log.type,
         service: log.service ?? 'application',
         module: log.module ?? '/',
-        level: log.level ?? 'info',
+        level: log.metadata.level ?? 'info',
         message: log.metadata.message
     }
 }
@@ -73,11 +73,17 @@ export default function logPipeline(log){
         }
     }
 
+    console.log(log)
+    console.log('2')
     const logRecord = transformRawLog(log);
     console.log(logRecord);
 
+    console.log(logRecord)
+    console.log('3')
     store.add(logRecord);
     const viewModel = createLogViewModel(logRecord);
+    console.log(viewModel)
+    console.log('4')
     broadcast(viewModel);
     return {
         statusCode: 200,

@@ -45,7 +45,7 @@ function toggleLayout(vm, name, root) {
     const layout = root.querySelector(`.layout[data-name="${name}"]`);
 
     if (layout) {
-        layout.hidden = !next;
+        layout.classList.toggle('expanded', next);
     }
 }
 function renderLayouts(vm) {
@@ -90,7 +90,7 @@ function createLayout(layoutVm, vm) {
 function createMetaLayout(layoutVm, vm) {
     const layout = document.createElement('div');
 
-    layout.classList.add('layout', 'meta');
+    layout.classList.add('layout', 'meta', vm.type, vm.level);
     layout.dataset.name = 'meta';
 
     const metaList = createMetaList(layoutVm, vm);
