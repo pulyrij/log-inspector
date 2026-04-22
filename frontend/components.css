@@ -53,7 +53,7 @@ html, body {
     flex-direction: column;
 
     min-height: 110%;
-    padding: 8px 4px 64px 8px;
+    padding: 8px 8px 64px 8px;
     gap: 8px;
 
     overflow: visible;

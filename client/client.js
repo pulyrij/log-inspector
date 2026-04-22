@@ -43,10 +43,15 @@ export default class LoggerClient{
     }
     #getCallerModule() {
         const stack = new Error().stack.split('\n');
-        console.log(stack);
         const line = stack[4] ?? '';
         const match = line.match(/at (.+?):\d+:\d+$/);
-        return match ? match[1] : 'unknown';
+        if (!match) return 'unknown';
+        const filePath = decodeURIComponent(new URL(match[1]).pathname
+            .replace(/^\//, '')
+            .replace(/\\/g, '/')
+        );
+        const cwd = process.cwd().replace(/\\/g, '/') + '/';
+        return filePath.replace(cwd, '') || 'unknown';
     }
     info(message) {
         const log = this.#createLog({
