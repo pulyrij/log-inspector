@@ -2,32 +2,34 @@ import crypto from 'crypto';
 import os from 'node:os';
 
 export default class LoggerClient{
+    #sessionId;
     constructor(service) {
-        this.sessionId = this.#sessionId();
+        this.#sessionId = crypto.randomInt(100_000_000_000, 999_999_999_999);
         this.service = service;
         this.pid = process.pid;
         this.hostname = os.hostname();
         this.logCount = 0;
-    }
-    #sessionId() {
-        return crypto.randomInt(100_000_000_000, 999_999_999_999);
     }
     #logId() {
         this.logCount++;
         return this.logCount;
     }
     async #sendLog(log) {
-        await fetch('http://localhost:3000/logs', {
-            method: 'POST',
+        try {
+            await fetch('http://localhost:3000/logs', {
+                method: 'POST',
 
-            headers: {'Content-Type': 'application/json'},
+                headers: {'Content-Type': 'application/json'},
 
-            body: JSON.stringify(log)
-        });
+                body: JSON.stringify(log)
+            });
+        } catch {
+            console.log('log not sent');
+        }
     }
     #createLog({message, type, level}) {
         return {
-            sessionId: this.sessionId,
+            sessionId: this.#sessionId,
             logId: this.#logId(),
             timestamp: Date.now(),
             pid: this.pid,
@@ -42,16 +44,20 @@ export default class LoggerClient{
         }
     }
     #getCallerModule() {
-        const stack = new Error().stack.split('\n');
-        const line = stack[4] ?? '';
-        const match = line.match(/at (.+?):\d+:\d+$/);
-        if (!match) return 'unknown';
-        const filePath = decodeURIComponent(new URL(match[1]).pathname
-            .replace(/^\//, '')
-            .replace(/\\/g, '/')
-        );
-        const cwd = process.cwd().replace(/\\/g, '/') + '/';
-        return filePath.replace(cwd, '') || 'unknown';
+        try {
+            const stack = new Error().stack.split('\n');
+            const line = stack[4] ?? '';
+            const match = line.match(/at (.+?):\d+:\d+$/);
+            if (!match) return 'unknown';
+            const filePath = decodeURIComponent(new URL(match[1]).pathname
+                .replace(/^\//, '')
+                .replace(/\\/g, '/')
+            );
+            const cwd = process.cwd().replace(/\\/g, '/').toLowerCase() + '/';
+            return '/' + filePath.toLowerCase().replace(cwd, '') || 'unknown';
+        } catch {
+            return 'unknown';
+        }
     }
     info(message) {
         const log = this.#createLog({

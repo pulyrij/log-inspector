@@ -1,0 +1,1 @@
+log.event('Lubchiku nassali v ebalo');
