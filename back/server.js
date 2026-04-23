@@ -1,13 +1,11 @@
 import http from 'node:http';
 import { WebSocketServer } from 'ws';
+import { initWS } from './ws.js';
+import app from './app.js';
+
+const PORT = 3000;
 
 const server = http.createServer(app);
-const wss = new WebSocketServer({ noServer: true });
+initWS(server);
 
-server.on('upgrade', (req, socket, head) => {
-    if (req.url === '/ws') {
-        wss.handleUpgrade(req, socket, head, (ws) => {
-            wss.emit('connection', ws, req);
-        });
-    }
-});
+server.listen(PORT);
