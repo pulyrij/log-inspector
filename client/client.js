@@ -3,7 +3,8 @@ import os from 'node:os';
 
 export default class LoggerClient{
     #sessionId;
-    constructor(service) {
+    constructor(url, service = '') {
+        this.url = url;
         this.#sessionId = crypto.randomInt(100_000_000_000, 999_999_999_999);
         this.service = service;
         this.pid = process.pid;
@@ -16,7 +17,7 @@ export default class LoggerClient{
     }
     async #sendLog(log) {
         try {
-            await fetch('http://localhost:3000/logs', {
+            await fetch(this.url, {
                 method: 'POST',
 
                 headers: {'Content-Type': 'application/json'},
