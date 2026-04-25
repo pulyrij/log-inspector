@@ -1,3 +1,4 @@
+import { WebSocketServer } from 'ws';
 import engine from './engine.js';
 
 export function initWS(server) {

@@ -1,6 +1,5 @@
 import http from 'node:http';
 import os from 'node:os';
-import { WebSocketServer } from 'ws';
 import { initWS } from './ws.js';
 import app from './app.js';
 
