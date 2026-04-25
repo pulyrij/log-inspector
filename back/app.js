@@ -1,5 +1,5 @@
 import express from 'express';
-import logsRouter from 'logs-router.js';
+import logsRouter from './logs-router.js';
 
 const app = new express();
 

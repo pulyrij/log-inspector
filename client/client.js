@@ -65,6 +65,7 @@ export default class LoggerClient{
             type: 'alert',
             level: 'info'
         });
+        console.log(log);
         this.#sendLog(log);
     }
     warn(message) {

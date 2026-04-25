@@ -1,3 +1,5 @@
+import engine from './engine.js';
+
 export function initWS(server) {
     const wss = new WebSocketServer({ noServer: true });
 
@@ -6,8 +8,23 @@ export function initWS(server) {
             wss.handleUpgrade(req, socket, head, (ws) => {
                 wss.emit('connection', ws, req);
             });
+        } else {
+            socket.destroy();
         }
     });
 
-    wss.on('connection', (ws) => {});
+    wss.on('connection', (ws) => {
+        const unsubscribe = engine.dispatch((log) => {
+            if (ws.readyState === ws.OPEN) {
+                ws.send(JSON.stringify(log));
+            }
+        });
+
+        ws.on('close', () => unsubscribe());
+
+        ws.on('error', (err) => {
+            console.log('WS error: ', err);
+            ws.close();
+        })
+    });
 }
