@@ -18,7 +18,12 @@ function processLogs() {
 
         const fragment = document.createDocumentFragment();
         logs.forEach(log => {
-            fragment.appendChild(createLogElement(log));
+            try {
+                fragment.appendChild(createLogElement(log));
+            } catch (err) {
+                console.log(err);
+                console.log(log);
+            }
         });
         logContainer.appendChild(fragment);
 

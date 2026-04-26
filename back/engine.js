@@ -33,6 +33,9 @@ class Engine{
         this.#subscribers.add(callback);
         return () => this.#subscribers.delete(callback);
     }
+    getHistory() {
+        return this.#store.map(log => this.#createLogViewModel(log));
+    }
     #validateRawLog(log) {
         if (!log || typeof log !== 'object') {
             return {
