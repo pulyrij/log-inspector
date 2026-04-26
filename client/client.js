@@ -1,6 +1,31 @@
 import crypto from 'crypto';
 import os from 'node:os';
 
+export function serializeError(error) {
+    if (!(error instanceof Error)) return error;
+
+    return {
+        name: error.name,
+        message: error.message,
+        stack: error.stack ? sanitizeStack(error.stack) : null,
+        cause: error.cause ? serializeError(error.cause) : null,
+        path: error.path ? error.path : null,
+        selector: error.selector ? error.selector : null,
+        event: error.event ? error.event : null,
+        reason: error.reason ? error.reason : null,
+        state: error.state ? error.state : null
+    };
+}
+
+function sanitizeStack(stack) {
+    if (!stack) return stack;
+
+    return stack
+        .replaceAll('file:///', '')
+        .replaceAll(process.env.BASE_PATH, '')
+        .split('\n').slice(1).join('\n');
+}
+
 export default class LoggerClient{
     #sessionId;
     constructor(url, service = '') {
@@ -31,8 +56,8 @@ export default class LoggerClient{
             console.log('log not sent');
         }
     }
-    #createLog({message, type, level}) {
-        return {
+    #createLog({ message, type, level, error, severity }) {
+        const log =  {
             sessionId: this.#sessionId,
             logId: this.#logId(),
             timestamp: Date.now(),
@@ -46,6 +71,13 @@ export default class LoggerClient{
                 message,
             }
         }
+
+        if (type === 'error') {
+            log.metadata.error = serializeError(error);
+            log.metadata.severity = severity;
+        }
+
+        return log;
     }
     #getCallerModule() {
         try {
@@ -84,6 +116,18 @@ export default class LoggerClient{
             message,
             type: 'alert',
             level: 'event'
+        });
+        this.#sendLog(log);
+    }
+    error(message, {
+        error,
+        severity,
+    }) {
+        const log = this.#createLog({
+            message,
+            type: 'error',
+            error: error,
+            severity: severity
         });
         this.#sendLog(log);
     }

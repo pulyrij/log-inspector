@@ -38,31 +38,34 @@ class Engine{
     }
     #validateRawLog(log) {
         if (!log || typeof log !== 'object') {
-            return {
-                isValid: false,
-                errors: ['log must be an object']
-            }
+            return { isValid: false, errors: ['log must be an object'] };
         }
 
         const errors = [];
+        const { sessionId, logId, type, metadata} = log;
 
-        if (typeof log.sessionId !== 'number') {
+        if (typeof sessionId !== 'number') {
             errors.push('sessionId must be a number');
         }
-        if (typeof log.logId !== 'number' || log.logId <= 0) {
+        if (typeof logId !== 'number' || log.logId <= 0) {
             errors.push('logId must be a positive number')
         }
-        if (!LOG_TYPES.includes(log.type)) {
+        if (!LOG_TYPES.includes(type)) {
             errors.push(`type must be one of ${LOG_TYPES.join(', ')}`);
         }
-        if (!log?.metadata?.message || typeof log.metadata.message !== 'string') {
+        if (!metadata || typeof metadata !== 'object') {
+            errors.push('metadata is required and must be an object');
+            return { isValid: false, errors };
+        }
+        if (!metadata.message || typeof log.metadata.message !== 'string') {
             errors.push('metadata.message is required and must be a string');
         }
-
-        return {
-            isValid: errors.length === 0,
-            errors
+        if (typeof metadata.error?.name !== 'string' ||
+            typeof metadata.error?.message !== 'string') {
+            errors.push('metadata.error is required and must be a serialized Error');
         }
+
+        return { isValid: errors.length === 0, errors };
     }
     #transformRawLog(log) {
         const id = `${log.sessionId}${String(log.logId).padStart(4, '0')}`;

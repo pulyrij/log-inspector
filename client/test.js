@@ -1,6 +1,4 @@
 import LoggerClient from './client.js';
 
 const log = new LoggerClient('http://192.168.88.18:3000/logs', 'parser');
-log.info('I was born today');
-log.warn('You fucking gay!');
-log.event('Lubchiku nassali v ebalo');
+log.error('Testing error logging', { error: new TypeError('Fuck niggers'), severity: 6})
