@@ -17,13 +17,16 @@ export default class LoggerClient{
     }
     async #sendLog(log) {
         try {
-            await fetch(this.url, {
+            const res = await fetch(this.url, {
                 method: 'POST',
-
                 headers: {'Content-Type': 'application/json'},
-
                 body: JSON.stringify(log)
             });
+
+            if(res.status === 400) {
+                const { errors } = await res.json();
+                console.log('Log rejected: ', errors);
+            }
         } catch {
             console.log('log not sent');
         }
