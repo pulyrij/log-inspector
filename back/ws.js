@@ -17,7 +17,7 @@ export function initWS(server) {
     wss.on('connection', (ws) => {
         const unsubscribe = engine.dispatch((log) => {
             if (ws.readyState === ws.OPEN) {
-                ws.send(JSON.stringify(log));
+                ws.send(JSON.stringify({ type: 'LOG', payload: log }));
             }
         });
 
