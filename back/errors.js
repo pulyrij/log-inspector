@@ -1,0 +1,104 @@
+export class BrowserError extends Error {
+    constructor(message, options = {}) {
+        super(message);
+        this.name = 'BrowserError';
+        this.cause = options.cause;
+    }
+}
+
+export class CampError extends Error {
+    constructor(message, { cause, type = 'unknown' } = {}) {
+        super(message, { cause });
+        this.name = 'CampError';
+        this.type = type;
+    }
+}
+export class ClickError extends Error {
+    constructor(message, { cause, selector } = {}) {
+        super(message, { cause });
+        this.name = 'ClickError';
+        this.selector = selector ?? null;
+    } 
+}
+export class QueueError extends Error {
+    constructor(message, { cause }) {
+        super(message, { cause });
+        this.name = 'QueueError';
+    }
+}
+
+export class FsError extends Error {
+    constructor(message, options = {}) {
+        super(message);
+        this.name = 'FsError';
+        this.cause = options.cause;
+        this.path = options.path;
+    }
+}
+export class AbortError extends Error {
+    constructor(message, { reason, cause }) {
+        super(message);
+        this.name = 'AbortError';
+        this.reason = reason;
+        this.cause = cause;
+    }
+}
+export class HFSMError extends Error{
+    constructor(message, { state, event, reason }) {
+        super(message);
+        this.name = 'HFSMError';
+        this.state = state;
+        this.event = event;
+        this.reason = reason;   
+    }
+}
+
+export function serializeError(error) {
+    if (!(error instanceof Error)) return error;
+
+    return {
+        name: error.name,
+        message: error.message,
+        stack: error.stack ? sanitizeStack(error.stack) : null,
+        cause: error.cause ? serializeError(error.cause) : null,
+        path: error.path ? error.path : null,
+        selector: error.selector ? error.selector : null,
+        event: error.event ? error.event : null,
+        reason: error.reason ? error.reason : null,
+        state: error.state ? error.state : null
+    };
+}
+
+function sanitizeStack(stack) {
+    if (!stack) return stack;
+
+    return stack
+        .replaceAll('file:///', '')
+        .replaceAll('C:/Users/pylya/OneDrive/%D0%A0%D0%BE%D0%B1%D0%BE%D1%87%D0%B8%D0%B9%20%D1%81%D1%82%D1%96%D0%BB/Internet%20Explorer/My-startUp/first-try/', '')
+        .split('\n').slice(1).join('\n');
+}
+
+function extractStack(error) {
+    if (!error?.stack) return null;
+    const frames = error.stack
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line.startsWith('at '));
+    
+    return frames.length ? frames : null;
+}
+function normalizeCause(cause, depth = 0) {
+    if (depth > 3) return { message: '[cause message truncated]' };
+    if (cause == null) return null;
+
+    if (cause instanceof Error) {
+        return {
+            name: cause.name,
+            message: cause.message,
+            stack: extractStack(cause),
+            cause: normalizeCause(cause.cause, depth + 1)
+        };
+    }
+
+    return { message: String(cause?.message ?? JSON.stringify(cause)) };
+}

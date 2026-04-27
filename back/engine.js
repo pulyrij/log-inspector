@@ -55,13 +55,17 @@ class Engine{
         }
         if (!metadata || typeof metadata !== 'object') {
             errors.push('metadata is required and must be an object');
+        }
+
+        if (errors.length > 0) {
             return { isValid: false, errors };
         }
-        if (!metadata.message || typeof log.metadata.message !== 'string') {
+
+        if ((!metadata.message || typeof log.metadata.message !== 'string') && type === 'alert') {
             errors.push('metadata.message is required and must be a string');
         }
-        if (typeof metadata.error?.name !== 'string' ||
-            typeof metadata.error?.message !== 'string') {
+        if ((typeof metadata.error?.name !== 'string' ||
+            typeof metadata.error?.message !== 'string') && type === 'error') {
             errors.push('metadata.error is required and must be a serialized Error');
         }
 
@@ -69,7 +73,7 @@ class Engine{
     }
     #transformRawLog(log) {
         const id = `${log.sessionId}${String(log.logId).padStart(4, '0')}`;
-        return {
+        const logRecord = {
             id,
             timestamp: log.timestamp,
             sessionId: log.sessionId,
@@ -81,6 +85,18 @@ class Engine{
             level: log.metadata.level ?? 'info',
             message: log.metadata.message
         }
+
+        if (log.type === 'alert') {
+            logRecord.level = log.metadata.level ?? 'info';
+        }
+        if (log.type === 'error') {
+            logRecord.errName = log.metadata.error.name;
+            logRecord.errMessage = log.metadata.error.message;
+            logRecord.errStack = '?';
+            logRecord.cause = '?';
+        }
+
+        return logRecord;
     }
     #createLogViewModel(log) {
         const datetime = new Date(log.timestamp)
