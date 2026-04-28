@@ -130,7 +130,8 @@ class Engine{
 
             ui: {
                 expandedLayouts: {
-                    meta: false
+                    meta: false,
+                    error: false,
                 }
             }
         }
@@ -143,18 +144,16 @@ class Engine{
             hostname: log.hostname,
         });
         if (log.errName) {
-            vm.layouts.push({
+            const errLayout = {
                 name: 'error',
                 errorName: log.errName,
                 message: log.errMessage,
                 severity: log.errSeverity
-            });
-        }
-        if (log.errStack) {
-            vm.layouts.push({
-                name: 'error-stack',
-                stack: log.errStack
-            });
+            };
+            if (log.errStack) {
+                errLayout.stack = log.errStack;
+            }
+            vm.layouts.push(errLayout);
         }
 
         return vm;

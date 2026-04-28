@@ -120,20 +120,25 @@ html, body {
     display: grid;
     gap: 4px;
 }
-.meta-row {
+.meta-row,
+.errorinfo-row {
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 8px;
     align-items: baseline;
 }
 .meta-key,
-.meta-value {
+.meta-value,
+.errorinfo-key,
+.errorinfo-value {
     margin: 0;
     min-width: 0;
 }
-.meta-key {
+.meta-key,
+.errorinfo-key {
     white-space: nowrap;
 }
-.meta-value {
+.meta-value,
+.errorinfo-value {
     overflow-wrap: anywhere; 
 }

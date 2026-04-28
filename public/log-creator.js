@@ -7,7 +7,8 @@ export default function createLogElement(vm) {
     const layouts = renderLayouts(vm);
     header.addEventListener('click', () => {
         toggleLayout(vm, 'meta', log);
-    })
+        toggleLayout(vm, 'error', log);
+    });
 
     log.appendChild(header);
     log.appendChild(layouts);
@@ -144,7 +145,66 @@ function createMetaItem(item, vm) {
     return row;
 }
 
+function createErrorLayout(layoutVm, vm) {
+    const layout = document.createElement('div');
+
+    layout.classList.add('layout', 'error');
+    layout.dataset.name = 'error';
+
+    const errorInfo = createErrorInfo(layoutVm);
+    const errorStack = createErrorStack(layoutVm.stack);
+
+    layout.appendChild(errorInfo);
+    layout.appendChild(errorStack);
+
+    return layout;
+}
+
+function createErrorInfo(layoutVm) {
+    const info = [
+        {key: 'name', value: layoutVm.errorName},
+        {key: 'message', value: layoutVm.message},
+        {key: 'severity', value: layoutVm.severity}
+    ];
+    const dl = document.createElement('dl');
+
+    info.forEach(item => {
+        dl.appendChild(createErrorInfoItem(item));
+    });
+
+    return dl;
+}
+function createErrorInfoItem(item) {
+    const row = document.createElement('div');
+    row.classList.add('errorinfo-row');
+
+    const key = document.createElement('dt');
+    key.classList.add('errorinfo-key');
+    key.textContent = `${item.key}:`;
+
+    const value = document.createElement('dd');
+    value.classList.add('errinfo-value');
+    value.textContent = item.value;
+
+    row.appendChild(key);
+    row.appendChild(value);
+
+    return row;
+}
+function createErrorStack(stack) {
+    const errorStack = document.createElement('div');
+    errorStack.classList.add('error-stack');
+
+    stack.forEach(frame => {
+        const stackFrame = document.createElement('span');
+        stackFrame.classList.add('stack-frame');
+        stackFrame.textContent = frame;
+
+        errorStack.appendChild(stackFrame);
+    });
+
+    return errorStack;
+}
 function createContextLayout() {}
-function createErrorLayout() {}
 function createErrorCauseLayout() {}
 function createStackTraceLayout() {}
