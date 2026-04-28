@@ -91,7 +91,7 @@ function normalizeCause(cause, depth = 0) {
     if (depth > 3) return { message: '[cause message truncated]' };
     if (cause == null) return null;
 
-    if (cause instanceof Error) {
+    if (cause?.name && cause?.message) {
         return {
             name: cause.name,
             message: cause.message,
@@ -101,4 +101,18 @@ function normalizeCause(cause, depth = 0) {
     }
 
     return { message: String(cause?.message ?? JSON.stringify(cause)) };
+}
+export function normalizeError(error) {
+    if (error == null) return {
+        name: 'UnknownError',
+        message: String(error),
+        stack: null,
+        cause: null
+    }
+    return {
+        name: error.name,
+        message: error.message,
+        stack: extractStack(error),
+        cause: normalizeCause(error.cause)
+    };
 }

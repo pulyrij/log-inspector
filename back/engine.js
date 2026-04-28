@@ -1,3 +1,5 @@
+import { normalizeError } from './errors.js';
+
 const LOG_TYPES = ['alert', 'error', 'data'];
 
 class Engine{
@@ -42,13 +44,16 @@ class Engine{
         }
 
         const errors = [];
-        const { sessionId, logId, type, metadata} = log;
+        const { sessionId, logId, timestamp, type, metadata} = log;
 
         if (typeof sessionId !== 'number') {
             errors.push('sessionId must be a number');
         }
         if (typeof logId !== 'number' || log.logId <= 0) {
-            errors.push('logId must be a positive number')
+            errors.push('logId must be a positive number');
+        }
+        if (typeof timestamp !== 'number' || timestamp <= 0) {
+            errors.push('timestamp must be a positive number');
         }
         if (!LOG_TYPES.includes(type)) {
             errors.push(`type must be one of ${LOG_TYPES.join(', ')}`);
@@ -61,7 +66,7 @@ class Engine{
             return { isValid: false, errors };
         }
 
-        if ((!metadata.message || typeof log.metadata.message !== 'string') && type === 'alert') {
+        if ((!metadata.message || typeof metadata.message !== 'string') && type === 'alert') {
             errors.push('metadata.message is required and must be a string');
         }
         if ((typeof metadata.error?.name !== 'string' ||
@@ -82,18 +87,22 @@ class Engine{
             type: log.type,
             service: log.service ?? 'application',
             module: log.module ?? '/',
-            level: log.metadata.level ?? 'info',
-            message: log.metadata.message
         }
 
         if (log.type === 'alert') {
+            logRecord.message = log.metadata.message;
             logRecord.level = log.metadata.level ?? 'info';
         }
         if (log.type === 'error') {
-            logRecord.errName = log.metadata.error.name;
-            logRecord.errMessage = log.metadata.error.message;
-            logRecord.errStack = '?';
-            logRecord.cause = '?';
+            const { name, message, stack, cause } = normalizeError(log.metadata.error);
+
+            logRecord.message = log.metadata.message ?? message;
+
+            logRecord.errName = name;
+            logRecord.errMessage = message;
+            logRecord.errStack = stack;
+            logRecord.errCause = cause;
+            logRecord.errSeverity = log.metadata.severity ?? 3;
         }
 
         return logRecord;
@@ -105,10 +114,10 @@ class Engine{
             .slice(0, 16);
         const [date, time] = datetime.split('T');
 
-        return {
+        const vm = {
             id: log.id,
             type: log.type,
-            level: log.level,
+            level: log.level ?? log.type,
             datetime: datetime,
 
             header: {
@@ -117,15 +126,7 @@ class Engine{
                 service: log.service
             },
 
-            layouts: [
-                {
-                    name: 'meta',
-                    date: date,
-                    module: log.module,
-                    pid: log.pid,
-                    hostname: log.hostname,
-                }
-            ],
+            layouts: [],
 
             ui: {
                 expandedLayouts: {
@@ -133,7 +134,32 @@ class Engine{
                 }
             }
         }
+
+        vm.layouts.push({
+            name: 'meta',
+            date: date,
+            module: log.module,
+            pid: log.pid,
+            hostname: log.hostname,
+        });
+        if (log.errName) {
+            vm.layouts.push({
+                name: 'error',
+                errorName: log.errName,
+                message: log.errMessage,
+                severity: log.errSeverity
+            });
+        }
+        if (log.errStack) {
+            vm.layouts.push({
+                name: 'error-stack',
+                stack: log.errStack
+            });
+        }
+
+        return vm;
     }
+    
 }
 
 const engine = new Engine();
