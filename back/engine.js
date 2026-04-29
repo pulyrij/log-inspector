@@ -131,7 +131,6 @@ class Engine{
             ui: {
                 expandedLayouts: {
                     meta: false,
-                    error: false,
                 }
             }
         }
@@ -144,14 +143,20 @@ class Engine{
             hostname: log.hostname,
         });
         if (log.errName) {
+            vm.errorname = log.errName;
             const errLayout = {
                 name: 'error',
-                errorName: log.errName,
                 message: log.errMessage,
                 severity: log.errSeverity
             };
+            vm.ui.expandedLayouts.error = false;
             if (log.errStack) {
-                errLayout.stack = log.errStack;
+                const stackLayout = {
+                    name: 'stack-trace',
+                    stack: log.errStack
+                }
+                vm.layouts.push(stackLayout);
+                vm.ui.expandedLayouts.stack = false;
             }
             vm.layouts.push(errLayout);
         }

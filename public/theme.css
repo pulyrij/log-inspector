@@ -5,6 +5,7 @@
     --color-bg: #010d25;
     --color-log-container: #151f33;
     --color-meta: #0f0c22;
+    --color-error-bg: #000f30;
 
     --color-info-1: #34db3c;
     --color-info-2: #378034;
@@ -14,6 +15,11 @@
 
     --color-event-1: #18ffc5;
     --color-event-2: #22977a;
+
+    --color-error-1: #ff8080;
+    --color-error-2: #ff6f6f;
+    --color-error-3: #ff5c5c;
+    --color-error-4: #ff2323;
 }
 
 body {
@@ -74,4 +80,26 @@ body {
 .log-header.alert.event .message,
 .layout.alert.event .meta-value {
     color: var(--color-event-1);
+}
+.meta-row.error,
+.layout.error-meta {
+    background-color: var(--color-error-bg);
+}
+.sevirity-1,
+.sevirity-2,
+.severity-3 {
+    color: var(--color-error-1);
+}
+.severity-4,
+.severity-5 {
+    color: var(--color-error-2);
+}
+.severity-6,
+.severity-7 {
+    color: var(--color-error-3);
+}
+.severity-8,
+.severity-9,
+.severity-10 {
+    color: var(--color-error-4);
 }

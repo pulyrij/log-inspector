@@ -115,7 +115,8 @@ html, body {
 .layout.expanded > dl {
     padding: 8px 0px;
 }
-.layout.meta dl {
+.layout.meta dl,
+.layout.error-meta dl {
     margin: 0;
     display: grid;
     gap: 4px;
@@ -141,4 +142,8 @@ html, body {
 .meta-value,
 .errorinfo-value {
     overflow-wrap: anywhere; 
+}
+.meta-row {
+    cursor: pointer;
+    user-select: none;
 }

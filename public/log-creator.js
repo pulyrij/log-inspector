@@ -7,12 +7,17 @@ export default function createLogElement(vm) {
     const layouts = renderLayouts(vm);
     header.addEventListener('click', () => {
         toggleLayout(vm, 'meta', log);
-        toggleLayout(vm, 'error', log);
     });
+
+    
 
     log.appendChild(header);
     log.appendChild(layouts);
 
+    const errorHeader = log.querySelector('.meta-row.error');
+    errorHeader.addEventListener('click', () => {
+        toggleLayout(vm, 'error', log);
+    });
     return log;
 }
 
@@ -55,8 +60,6 @@ function renderLayouts(vm) {
     vm.layouts.forEach(layout => {
         const layoutElement = createLayout(layout, vm);
         if (layoutElement) {
-            layoutElement.hidden = !vm.ui.expandedLayouts[layout.name];
-
             container.appendChild(layoutElement);
         }
     });
@@ -103,7 +106,6 @@ function createMetaLayout(layoutVm, vm) {
 function createMetaList(layoutVm, vm) {
     const meta = [
         {key: 'type', value: vm.type},
-        {key: 'level', value: vm.level},
         {key: 'time', value: vm.header.time},
         {key: 'date', value: layoutVm.date},
         {key: 'message', value: vm.header.message},
@@ -112,6 +114,12 @@ function createMetaList(layoutVm, vm) {
         {key: 'hostname', value: layoutVm.hostname},
         {key: 'pid', value: layoutVm.pid}
     ];
+    if (vm.type === 'alert') {
+        meta.splice(1, 0, { key: 'level', value: vm.level });
+    }
+    if (vm.type === 'error') {
+        meta.push({ key: 'error', value: vm.errorname });
+    }
 
     const dl = document.createElement('dl');
 
@@ -123,7 +131,7 @@ function createMetaList(layoutVm, vm) {
 }
 function createMetaItem(item, vm) {
     const row = document.createElement('div');
-    row.classList.add('meta-row');
+    row.classList.add('meta-row', item.key);
 
     const key = document.createElement('dt');
     key.classList.add('meta-key');
@@ -145,24 +153,22 @@ function createMetaItem(item, vm) {
     return row;
 }
 
-function createErrorLayout(layoutVm, vm) {
+function createErrorLayout(layoutVm) {
     const layout = document.createElement('div');
 
-    layout.classList.add('layout', 'error');
+    console.log(layoutVm);
+    layout.classList.add('layout', 'error-meta', `sevirity-${layoutVm.severity}`);
     layout.dataset.name = 'error';
 
     const errorInfo = createErrorInfo(layoutVm);
-    const errorStack = createErrorStack(layoutVm.stack);
 
     layout.appendChild(errorInfo);
-    layout.appendChild(errorStack);
 
     return layout;
 }
 
 function createErrorInfo(layoutVm) {
     const info = [
-        {key: 'name', value: layoutVm.errorName},
         {key: 'message', value: layoutVm.message},
         {key: 'severity', value: layoutVm.severity}
     ];
@@ -183,7 +189,7 @@ function createErrorInfoItem(item) {
     key.textContent = `${item.key}:`;
 
     const value = document.createElement('dd');
-    value.classList.add('errinfo-value');
+    value.classList.add('errorinfo-value');
     value.textContent = item.value;
 
     row.appendChild(key);
@@ -191,6 +197,7 @@ function createErrorInfoItem(item) {
 
     return row;
 }
+
 function createErrorStack(stack) {
     const errorStack = document.createElement('div');
     errorStack.classList.add('error-stack');
