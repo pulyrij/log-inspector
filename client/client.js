@@ -7,23 +7,15 @@ export function serializeError(error) {
     return {
         name: error.name,
         message: error.message,
-        stack: error.stack ? sanitizeStack(error.stack) : null,
+        stack: error.stack ?? null,
+        projectRoor: process.cwd().replace(/\\/g, '/').toLowerCase(),
         cause: error.cause ? serializeError(error.cause) : null,
-        path: error.path ? error.path : null,
-        selector: error.selector ? error.selector : null,
-        event: error.event ? error.event : null,
-        reason: error.reason ? error.reason : null,
-        state: error.state ? error.state : null
+        path: error.path ?? null,
+        selector: error.selector ?? null,
+        event: error.event ?? null,
+        reason: error.reason ?? null,
+        state: error.state ?? null
     };
-}
-
-function sanitizeStack(stack) {
-    if (!stack) return stack;
-
-    return stack
-        .replaceAll('file:///', '')
-        .replaceAll(process.env.BASE_PATH, '')
-        .split('\n').slice(1).join('\n');
 }
 
 export default class LoggerClient{

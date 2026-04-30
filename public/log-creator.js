@@ -1,4 +1,5 @@
 export default function createLogElement(vm) {
+    console.log(vm);
     const log = document.createElement('div');
     log.className = 'log';
     log.dataset.id = vm.id;

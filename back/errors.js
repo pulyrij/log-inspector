@@ -69,21 +69,49 @@ export function serializeError(error) {
     };
 }
 
-function sanitizeStack(stack) {
-    if (!stack) return stack;
+const PROJECT_ROOT = process.cwd().replace(/\\/g, '/').toLowerCase();
 
-    return stack
-        .replaceAll('file:///', '')
-        .replaceAll('C:/Users/pylya/OneDrive/%D0%A0%D0%BE%D0%B1%D0%BE%D1%87%D0%B8%D0%B9%20%D1%81%D1%82%D1%96%D0%BB/Internet%20Explorer/My-startUp/first-try/', '')
-        .split('\n').slice(1).join('\n');
+function cleanFrame(frame, projectRoot = PROJECT_ROOT) {
+    frame = frame.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+
+    if (/\(node:[^)]+\)/.test(frame)) {
+        return frame.replace(/\(node:[^)]+\)/g, '(node:internal)');
+    }
+
+    frame = frame.replace(/file:\/\/\//g, '');
+
+    const withParens = /\(([^)]+:\d+:\d+)\)/;
+    const withoutParens = /^at (.+:\d+:\d+)$/;
+
+    const replacePath = (path) => {
+        const decoded = decodeURIComponent(path).replace(/\\/g, '/');
+        const relative = decoded.toLowerCase().replace(projectRoot + '/', '');
+        return relative;
+    };
+
+    if (withParens.test(frame)) {
+        return frame.replace(withParens, (_, path) => `(${replacePath(path)})`);
+    }
+
+    const match = frame.match(withoutParens);
+    if (match) {
+        return `at ${replacePath(match[1])}`;
+    }
+
+    return frame;
 }
 
 function extractStack(error) {
     if (!error?.stack) return null;
+
+    const projectRoot = error.projectRoot ?? PROJECT_ROOT;
+
     const frames = error.stack
         .split('\n')
         .map(line => line.trim())
-        .filter(line => line.startsWith('at '));
+        .filter(line => line.startsWith('at '))
+        .map(frame => cleanFrame(frame, projectRoot))
+        .filter(Boolean);
     
     return frames.length ? frames : null;
 }
