@@ -145,7 +145,7 @@ class Engine{
         if (log.errName) {
             const errLayout = {
                 name: 'error',
-                errorname: log.errname,
+                errorname: log.errName,
                 message: log.errMessage,
                 severity: log.errSeverity
             };
@@ -155,7 +155,7 @@ class Engine{
                     name: 'stack-trace',
                     stack: log.errStack
                 }
-                errLayout.topframe = log.errorStack[0];
+                errLayout.topframe = log.errStack[0];
                 vm.layouts.push(stackLayout);
                 vm.ui.expandedLayouts.stack = false;
             }

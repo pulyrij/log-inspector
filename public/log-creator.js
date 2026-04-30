@@ -9,15 +9,9 @@ export default function createLogElement(vm) {
         toggleLayout(vm, 'meta', log);
     });
 
-    
-
     log.appendChild(header);
     log.appendChild(layouts);
 
-    const errorHeader = log.querySelector('.meta-row.error');
-    errorHeader.addEventListener('click', () => {
-        toggleLayout(vm, 'error', log);
-    });
     return log;
 }
 
@@ -58,7 +52,7 @@ function renderLayouts(vm) {
     const container = createLayoutsContainer();
 
     vm.layouts.forEach(layout => {
-        const layoutElement = createLayout(layout, vm);
+        const layoutElement = createLayout(layout, vm, container);
         if (layoutElement) {
             container.appendChild(layoutElement);
         }
@@ -81,15 +75,13 @@ const layoutFactories = {
         'stack-trace': createStackTraceLayout
     }
 
-function createLayout(layoutVm, vm) {
+function createLayout(layoutVm, vm, root) {
     const factory = layoutFactories[layoutVm.name];
-
     if (!factory) {
         console.error('Unknown layout:', layoutVm.name);
         return null;
     }
-
-    return factory(layoutVm, vm);
+    return factory(layoutVm, vm, root);
 }
 function createMetaLayout(layoutVm, vm) {
     const layout = document.createElement('div');
@@ -149,25 +141,9 @@ function createMetaItem(item, vm) {
 
     return row;
 }
-
-function createErrorLayout(layoutVm) {
-    const layout = document.createElement('div');
-
-    console.log(layoutVm);
-    layout.classList.add('layout', 'error-meta', `sevirity-${layoutVm.severity}`);
-    layout.dataset.name = 'error';
-
-    const errorHeader = createErrorHeader(layoutVm);
-    const errorInfo = createErrorInfo(layoutVm);
-
-    layout.appendChild(errorInfo);
-
-    return layout;
-}
-
-function createErrorHeader(layoutVm) {
+function createErrorHeader(layoutVm, vm, root) {
     const errorHeader = document.createElement('div');
-    errorHeader.classList.add('error-header');
+    errorHeader.classList.add('error-header', vm.type, vm.level);
 
     const errorName = document.createElement('span');
     errorName.classList.add('name');
@@ -181,31 +157,58 @@ function createErrorHeader(layoutVm) {
     errorTopFrame.classList.add('topframe');
     errorTopFrame.textContent = layoutVm.topframe;
 
+    errorHeader.appendChild(errorName);
+    errorHeader.appendChild(errorTopFrame);
+
+    errorHeader.addEventListener('click', () => {
+        toggleLayout(vm, 'error-meta', root);
+    });
+
     return errorHeader;
 }
-function createErrorInfo(layoutVm) {
+function createErrorLayout(layoutVm, vm, root) {
+    const errorHeader = createErrorHeader(layoutVm, vm, root);
+
+    const layout = document.createElement('div');
+    layout.classList.add('layout', 'error-meta', `severity-${layoutVm.severity}`);
+    layout.dataset.name = 'error-meta';
+
+    const errorMetaList = createErrorMetaList(layoutVm);
+    layout.appendChild(errorMetaList);
+
+    // Повертаємо fragment, щоб вставити обидва елементи разом
+    const fragment = document.createDocumentFragment();
+    fragment.appendChild(errorHeader);
+    fragment.appendChild(layout);
+
+    return fragment;
+}
+
+
+function createErrorMetaList(layoutVm) {
     const info = [
+        {key: 'name', value: layoutVm.errorname},
         {key: 'message', value: layoutVm.message},
         {key: 'severity', value: layoutVm.severity}
     ];
     const dl = document.createElement('dl');
 
     info.forEach(item => {
-        dl.appendChild(createErrorInfoItem(item));
+        dl.appendChild(createErrorMetaListItem(item));
     });
 
     return dl;
 }
-function createErrorInfoItem(item) {
+function createErrorMetaListItem(item) {
     const row = document.createElement('div');
-    row.classList.add('errorinfo-row');
+    row.classList.add('error-meta-row');
 
     const key = document.createElement('dt');
-    key.classList.add('errorinfo-key');
+    key.classList.add('error-meta-key');
     key.textContent = `${item.key}:`;
 
     const value = document.createElement('dd');
-    value.classList.add('errorinfo-value');
+    value.classList.add('error-meta-value');
     value.textContent = item.value;
 
     row.appendChild(key);
