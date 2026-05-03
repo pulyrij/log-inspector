@@ -73,7 +73,7 @@ const layoutFactories = {
         'context': createContextLayout,
         'error': createErrorLayout,
         'error-cause': createErrorCauseLayout,
-        'stack-trace': createStackTraceLayout
+        'stack-trace': createErrorStack,
     }
 
 function createLayout(layoutVm, vm, root) {
@@ -142,9 +142,10 @@ function createMetaItem(item, vm) {
 
     return row;
 }
+
 function createErrorHeader(layoutVm, vm, root) {
     const errorHeader = document.createElement('div');
-    errorHeader.classList.add('error-header', vm.type, vm.level);
+    errorHeader.classList.add('error-header', `severity-${layoutVm.severity}`);
 
     const errorName = document.createElement('span');
     errorName.classList.add('name');
@@ -167,6 +168,7 @@ function createErrorHeader(layoutVm, vm, root) {
 
     return errorHeader;
 }
+
 function createErrorLayout(layoutVm, vm, root) {
     const errorHeader = createErrorHeader(layoutVm, vm, root);
 
@@ -174,35 +176,33 @@ function createErrorLayout(layoutVm, vm, root) {
     layout.classList.add('layout', 'error-meta', `severity-${layoutVm.severity}`);
     layout.dataset.name = 'error-meta';
 
-    const errorMetaList = createErrorMetaList(layoutVm);
+    const errorMetaList = createErrorMetaList(layoutVm, vm, root);
     layout.appendChild(errorMetaList);
 
-    // Повертаємо fragment, щоб вставити обидва елементи разом
     const fragment = document.createDocumentFragment();
     fragment.appendChild(errorHeader);
     fragment.appendChild(layout);
 
     return fragment;
 }
-
-
-function createErrorMetaList(layoutVm) {
+function createErrorMetaList(layoutVm, vm, root) {
     const info = [
         {key: 'name', value: layoutVm.errorname},
         {key: 'message', value: layoutVm.message},
-        {key: 'severity', value: layoutVm.severity}
+        {key: 'severity', value: layoutVm.severity},
+        {key: 'stack', value: layoutVm.stack}
     ];
     const dl = document.createElement('dl');
 
     info.forEach(item => {
-        dl.appendChild(createErrorMetaListItem(item));
+        dl.appendChild(createErrorMetaListItem(item, vm, root));
     });
 
     return dl;
 }
-function createErrorMetaListItem(item) {
+function createErrorMetaListItem(item, vm, root) {
     const row = document.createElement('div');
-    row.classList.add('error-meta-row');
+    row.classList.add('error-meta-row', item.key);
 
     const key = document.createElement('dt');
     key.classList.add('error-meta-key');
@@ -215,14 +215,20 @@ function createErrorMetaListItem(item) {
     row.appendChild(key);
     row.appendChild(value);
 
+    if (key === 'stack') {
+        row.addEventListener('click', () => {
+            toggleLayout(vm, 'stack-trace', root)
+        });
+    }
+
     return row;
 }
 
-function createErrorStack(stack) {
+function createErrorStack(layoutVm) {
     const errorStack = document.createElement('div');
     errorStack.classList.add('error-stack');
 
-    stack.forEach(frame => {
+    layoutVm.stack.forEach(frame => {
         const stackFrame = document.createElement('span');
         stackFrame.classList.add('stack-frame');
         stackFrame.textContent = frame;

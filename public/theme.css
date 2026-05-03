@@ -5,7 +5,7 @@
     --color-bg: #010d25;
     --color-log-container: #151f33;
     --color-meta: #0f0c22;
-    --color-error-bg: #000f30;
+    --color-error-bg: #0c1122;
 
     --color-info-1: #34db3c;
     --color-info-2: #378034;
@@ -16,10 +16,14 @@
     --color-event-1: #18ffc5;
     --color-event-2: #22977a;
 
-    --color-error-1: #ff8080;
-    --color-error-2: #ff6f6f;
-    --color-error-3: #ff5c5c;
-    --color-error-4: #ff2323;
+    --color-error-1: #ff915e;
+    --color-error-2: #ce6e42;
+
+    --color-error-meta-1: #ff8585;
+    --color-error-meta-2: #ff7777;
+    --color-error-meta-3: #ff6d6d;
+    --color-error-meta-4: #a13333;
+    --color-error-meta-5: #792626;
 }
 
 body {
@@ -47,7 +51,8 @@ body {
     border-radius: 4px;
     overflow: hidden;
 }
-.log-header {
+.log-header,
+.error-header {
     background-color: var(--color-bg);
     font-weight: bold;
 }
@@ -81,25 +86,36 @@ body {
 .layout.alert.event .meta-value {
     color: var(--color-event-1);
 }
+.log-header.error time,
+.log-header.error .service,
+.layout .meta-key {
+    color: var(--color-error-2);
+}
+.log-header.error .message,
+.layout .meta-value {
+    color: var(--color-error-1);
+}
 .meta-row.error,
 .layout.error-meta {
     background-color: var(--color-error-bg);
 }
 .sevirity-1,
-.sevirity-2,
-.severity-3 {
-    color: var(--color-error-1);
+.sevirity-2 {
+    color: var(--color-error-meta-1);
 }
-.severity-4,
-.severity-5 {
-    color: var(--color-error-2);
+.severity-3,
+.severity-4 {
+    color: var(--color-error-meta-2);
 }
-.severity-6,
-.severity-7 {
-    color: var(--color-error-3);
+.severity-5,
+.severity-6 {
+    color: var(--color-error-meta-3);
 }
-.severity-8,
+.severity-7,
+.severity-8 {
+    color: var(--color-error-meta-4);
+}
 .severity-9,
 .severity-10 {
-    color: var(--color-error-4);
+    color: var(--color-error-meta-5);
 }

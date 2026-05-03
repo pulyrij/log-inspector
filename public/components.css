@@ -33,7 +33,7 @@ html, body {
     padding-left: 16px;
 }
 #url {
-    color :rgb(189, 3, 80);
+    color: #ffffff;
 }
 #main {
     flex: 1;
@@ -69,7 +69,8 @@ html, body {
 
     animation: log-in 200ms ease-out both;
 }
-.log-header {
+.log-header,
+.error-header {
     display: flex;
     align-items: center;
 
@@ -122,7 +123,7 @@ html, body {
     gap: 4px;
 }
 .meta-row,
-.errorinfo-row {
+.error-meta-row {
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 8px;
@@ -130,20 +131,20 @@ html, body {
 }
 .meta-key,
 .meta-value,
-.errorinfo-key,
-.errorinfo-value {
+.error-meta-key,
+.error-meta-value {
     margin: 0;
     min-width: 0;
 }
 .meta-key,
-.errorinfo-key {
+.error-meta-key {
     white-space: nowrap;
 }
 .meta-value,
-.errorinfo-value {
+.error-meta-value {
     overflow-wrap: anywhere; 
 }
-.meta-row {
-    cursor: pointer;
+.meta-key,
+.error-meta-key {
     user-select: none;
 }

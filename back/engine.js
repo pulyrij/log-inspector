@@ -156,6 +156,7 @@ class Engine{
                     stack: log.errStack
                 }
                 errLayout.topframe = log.errStack[0];
+                errLayout.stack = `${log.errStack.length} frames`;
                 vm.layouts.push(stackLayout);
                 vm.ui.expandedLayouts.stack = false;
             }
