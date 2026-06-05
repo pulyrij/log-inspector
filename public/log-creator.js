@@ -215,7 +215,7 @@ function createErrorMetaListItem(item, vm, root) {
     row.appendChild(key);
     row.appendChild(value);
 
-    if (key === 'stack') {
+    if (item.key === 'stack') {
         row.addEventListener('click', () => {
             toggleLayout(vm, 'stack-trace', root)
         });
@@ -226,18 +226,23 @@ function createErrorMetaListItem(item, vm, root) {
 
 function createErrorStack(layoutVm) {
     const errorStack = document.createElement('div');
-    errorStack.classList.add('error-stack');
+    errorStack.classList.add('layout', 'error-stack');
+    errorStack.dataset.name = 'stack-trace';
+
+    const inner = document.createElement('div'); // ← wrapper
+    inner.style.overflow = 'hidden';
 
     layoutVm.stack.forEach(frame => {
         const stackFrame = document.createElement('span');
         stackFrame.classList.add('stack-frame');
         stackFrame.textContent = frame;
-
-        errorStack.appendChild(stackFrame);
+        inner.appendChild(stackFrame); // ← в inner, не в errorStack
     });
 
+    errorStack.appendChild(inner);
     return errorStack;
 }
+
 function createContextLayout() {}
 function createErrorCauseLayout() {}
 function createStackTraceLayout() {}

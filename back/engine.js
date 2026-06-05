@@ -157,8 +157,11 @@ class Engine{
                 }
                 errLayout.topframe = log.errStack[0];
                 errLayout.stack = `${log.errStack.length} frames`;
+                vm.layouts.push(errLayout);
                 vm.layouts.push(stackLayout);
                 vm.ui.expandedLayouts.stack = false;
+
+                return vm;
             }
             vm.layouts.push(errLayout);
         }

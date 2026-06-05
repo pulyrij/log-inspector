@@ -148,3 +148,23 @@ html, body {
 .error-meta-key {
     user-select: none;
 }
+.error-meta-row.stack .error-meta-value {
+    text-decoration: underline;
+    cursor: pointer;
+    user-select: none;
+}
+.error-stack > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0;
+    overflow: hidden;
+    overflow-x: auto;
+    transition: padding 200ms ease-out;
+}
+.error-stack.expanded > div {
+    padding: 8px 12px;
+}
+.stack-frame {
+    white-space: nowrap;
+}

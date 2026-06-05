@@ -92,11 +92,13 @@ body {
     color: var(--color-error-2);
 }
 .log-header.error .message,
-.layout .meta-value {
+.layout .meta-value,
+.error-stack {
     color: var(--color-error-1);
 }
 .meta-row.error,
-.layout.error-meta {
+.layout.error-meta,
+.layout.error-stack {
     background-color: var(--color-error-bg);
 }
 .sevirity-1,
