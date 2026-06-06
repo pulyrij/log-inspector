@@ -21,7 +21,7 @@ function processLogs() {
             try {
                 fragment.appendChild(createLogElement(log));
             } catch (err) {
-                console.log(err);
+                console.error(err);
                 console.log(log);
             }
         });

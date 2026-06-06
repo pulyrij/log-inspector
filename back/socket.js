@@ -16,13 +16,7 @@ export default function connect() {
 
     socket.onmessage = (event) => {
         const message = JSON.parse(event.data);
-
-        if (message.type === 'LOG') {
-            
-            const viewModel = message.payload;
-
-            store.add(viewModel);
-        }
+        if (message.type === 'LOG') store.add(message.payload);
     };
 
     socket.onclose = () => {

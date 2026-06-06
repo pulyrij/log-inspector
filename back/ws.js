@@ -22,9 +22,10 @@ export function initWS(server) {
         });
 
         engine.getHistory().forEach(log => {
-            ws.send(JSON.stringify({ type: 'LOG', payload: log }));
+            if (ws.readyState === ws.OPEN)
+                ws.send(JSON.stringify({ type: 'LOG', payload: log }));
         });
-        
+            
         ws.on('close', () => unsubscribe());
 
         ws.on('error', (err) => {

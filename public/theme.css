@@ -42,6 +42,7 @@ body {
     background: transparent;
 }
 #main::-webkit-scrollbar-thumb {
+    background: var(--color-log-container);
     border-radius: 999px;
 }
 #log-container {
@@ -101,8 +102,8 @@ body {
 .layout.error-stack {
     background-color: var(--color-error-bg);
 }
-.sevirity-1,
-.sevirity-2 {
+.severity-1,
+.severity-2 {
     color: var(--color-error-meta-1);
 }
 .severity-3,

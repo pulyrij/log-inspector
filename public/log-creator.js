@@ -1,5 +1,5 @@
 export default function createLogElement(vm) {
-    console.log(vm);
+
     const log = document.createElement('div');
     log.className = 'log';
     log.dataset.id = vm.id;
@@ -70,9 +70,7 @@ function createLayoutsContainer() {
 
 const layoutFactories = {
         'meta': createMetaLayout,
-        'context': createContextLayout,
         'error': createErrorLayout,
-        'error-cause': createErrorCauseLayout,
         'stack-trace': createErrorStack,
     }
 
@@ -242,7 +240,3 @@ function createErrorStack(layoutVm) {
     errorStack.appendChild(inner);
     return errorStack;
 }
-
-function createContextLayout() {}
-function createErrorCauseLayout() {}
-function createStackTraceLayout() {}

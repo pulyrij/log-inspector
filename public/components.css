@@ -139,14 +139,11 @@ html, body {
 .meta-key,
 .error-meta-key {
     white-space: nowrap;
+    user-select: none;
 }
 .meta-value,
 .error-meta-value {
     overflow-wrap: anywhere; 
-}
-.meta-key,
-.error-meta-key {
-    user-select: none;
 }
 .error-meta-row.stack .error-meta-value {
     text-decoration: underline;

@@ -12,17 +12,16 @@ class Store {
         return true;
     }
     getPending() {
-        const result = [];
+    if (!this.unprocessed.size) return [];
 
-        for (const [id, vm] of this.store) {
-            if (this.unprocessed.has(id)) {
-                result.push(vm);
-                this.unprocessed.delete(id);
-            }
-        }
-        result.sort((a, b) => a.id - b.id);
-        return result;
+    const result = [];
+    for (const id of this.unprocessed) {
+        result.push(this.store.get(id));
     }
+    this.unprocessed.clear();
+    result.sort((a, b) => a.id - b.id);
+    return result;
+}
 }
 const store = new Store();
 export default store;
