@@ -6,6 +6,24 @@ connect();
 
 document.getElementById('url').textContent = window.location.href;
 
+const tabs = document.querySelectorAll('nav button');
+
+const viewMain = document.getElementById('view-main');
+const viewTable = document.getElementById('view-table');
+
+document.getElementById('tab-main').addEventListener('click', (el) => {
+    tabs.forEach(t => t.classList.remove('active'));
+    el.currentTarget.classList.add('active');
+    viewMain.hidden = false;
+    viewTable.hidden = true;
+});
+document.getElementById('tab-table').addEventListener('click', (el) => {
+    tabs.forEach(t => t.classList.remove('active'));
+    el.currentTarget.classList.add('active');
+    viewMain.hidden = true;
+    viewTable.hidden = false;
+});
+
 const scroller = document.getElementById('main');
 
 const logContainer = document.getElementById('log-container');

@@ -1,0 +1,105 @@
+.log {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+    flex-shrink: 0;
+
+    animation: log-in 200ms ease-out both;
+}
+.log-header,
+.error-header {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+    padding: 4px 8px;
+
+    cursor: pointer;
+    user-select: none;
+
+    min-width: 0;
+}
+.log-header time {
+    flex-shrink: 0;
+}
+.log-header .message {
+    flex: 1 1 auto;
+
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.log-header .service {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+.log-layouts {
+    min-width: 0;
+}
+.layout {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 200ms ease-out;
+    padding: 0px 12px;
+}
+.layout > dl {
+    overflow: hidden;
+    transition: padding 200ms ease-out;
+}
+.layout.expanded {
+    grid-template-rows: 1fr;
+}
+.layout.expanded > dl {
+    padding: 8px 0px;
+}
+.layout.meta dl,
+.layout.error-meta dl {
+    margin: 0;
+    display: grid;
+    gap: 4px;
+}
+.meta-row,
+.error-meta-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+    align-items: baseline;
+}
+.meta-key,
+.meta-value,
+.error-meta-key,
+.error-meta-value {
+    margin: 0;
+    min-width: 0;
+}
+.meta-key,
+.error-meta-key {
+    white-space: nowrap;
+    user-select: none;
+}
+.meta-value,
+.error-meta-value {
+    overflow-wrap: anywhere; 
+}
+.error-meta-row.stack .error-meta-value {
+    text-decoration: underline;
+    cursor: pointer;
+    user-select: none;
+}
+.error-stack > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0;
+    overflow: hidden;
+    overflow-x: auto;
+    transition: padding 200ms ease-out;
+}
+.error-stack.expanded > div {
+    padding: 8px 12px;
+}
+.stack-frame {
+    white-space: nowrap;
+}

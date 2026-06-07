@@ -6,15 +6,28 @@
     <title>Log Inspector</title>
     <link rel="icon" href="/icon192x192.png" type="image/png">
     <link rel="stylesheet" href="/components.css">
+    <link rel="stylesheet" href="/top-bar.css">
+    <link rel="stylesheet" href="/log.css">
     <link rel="stylesheet" href="/theme.css">
 </head>
 <body>
     <div id="app">
         <div id="top-bar">
             <h1 id="url"></h1>
+            <nav>
+                <button id="tab-main" class="active">Main</button>
+                <button id="tab-table">Trade table</button>
+            </nav>
         </div>
-        <div id="main">
-            <div id="log-container"></div>
+        <div id="view-main">
+            <div id="main">
+                <div id="log-container"></div>
+            </div>
+        </div>
+        <div id="view-table">
+            <div id="table">
+
+            </div>
         </div>
     </div>
     <script type="module" src="/app.js"></script>

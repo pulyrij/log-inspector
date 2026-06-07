@@ -1,0 +1,35 @@
+#top-bar {
+    position: sticky;
+    height: 60px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 16px;
+}
+#url {
+    color: #ffffff;
+}
+nav {
+    display: flex;
+    gap: 24px;
+    margin-right: auto;
+    padding-left: 24px;
+}
+nav button {
+    background: transparent;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    padding: 4px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+}
+nav button:hover {
+    background: rgba(255, 255, 255, 0.07);
+}
+nav button.active {
+    border-width: 3px;
+    background: rgba(255, 255, 255, 0.12);
+}
