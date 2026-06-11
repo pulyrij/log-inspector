@@ -8,8 +8,9 @@ class Engine{
     constructor() {
         this.#store = [];
         this.#subscribers = new Set();
+        this.tables = new Map();
     }
-    receive(rawLog) {
+    receiveLog(rawLog) {
         const { isValid, errors } = this.#validateRawLog(rawLog);
 
         if (!isValid) {
@@ -168,7 +169,51 @@ class Engine{
 
         return vm;
     }
-    
+    receiveTable(rawSetup) {
+        const { isValid, errors } = this.#validateTableSetup(rawSetup);
+
+        if (!isValid) {
+            return {
+                statusCode: 400,
+                body: { ok: false, errors }
+            }
+        }
+
+    }
+    #validateTableSetup(setup) {
+        if (typeof setup !== 'object' || setup === null) {
+            return { isValid: false, errors: ['table setup must be an object'] };
+        }
+
+        const errors = [];
+        const { label, columns, rowCount } = setup;
+
+        if (typeof label !== 'string') {
+            errors.push('label must be a string');
+        }
+        if (this.tables.has(label)) {
+            errors.push(`table '${label}' already exists`);
+        }
+        if (!Array.isArray(columns) || columns.length === 0) {
+            errors.push('columns must be an array');
+        }
+        if (typeof rowCount !== 'number') {
+            errors.push('rowCount must be a number');
+        }
+
+        return { isValid: errors.length === 0, errors }
+    }
+    receiveSnapshot(rawSnapshot) {
+        const { isValid, errors } = this.#validateTableSnapshot();
+
+        if (!isValid) {
+            return {
+                statusCode: 400,
+                body: { ok: false, errors }
+            }
+        }
+        
+    }
 }
 
 const engine = new Engine();

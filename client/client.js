@@ -20,8 +20,8 @@ export function serializeError(error) {
 
 export default class LoggerClient{
     #sessionId;
-    constructor(url, service = '') {
-        this.url = url;
+    constructor(baseUrl, service = '') {
+        this.baseUrl = baseUrl;
         this.#sessionId = crypto.randomInt(100_000_000_000, 999_999_999_999);
         this.service = service;
         this.pid = process.pid;
@@ -34,18 +34,18 @@ export default class LoggerClient{
     }
     async #sendLog(log) {
         try {
-            const res = await fetch(this.url, {
+            const res = await fetch(`${this.baseUrl}/logs/log`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(log)
             });
 
-            if(res.status === 400) {
+            if (res.status === 400) {
                 const { errors } = await res.json();
-                console.log('Log rejected: ', errors);
+                console.error('Log rejected: ', errors);
             }
         } catch {
-            console.log('log not sent');
+            console.error('Log not sent');
         }
     }
     #createLog({ message, type, level, error, severity }) {
@@ -122,5 +122,48 @@ export default class LoggerClient{
             severity: severity
         });
         this.#sendLog(log);
+    }
+    async createTableStream(label, columns, rowCount) {
+        const baseUrl = this.baseUrl;
+        const setup = {
+            label,
+            columns,
+            rowCount
+        }
+
+        try {
+            const res = await fetch(`${baseUrl}/logs/table`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(setup)
+            });
+
+            if (res.status === 400) {
+                const { errors } = await res.json();
+                console.error('Creation of table rejected: ', errors);   
+            }
+        } catch {
+            console.error('Creation setup not sent');
+            return null;
+        }
+
+        return {
+            async update(rows) {
+                try {
+                    const res = await fetch(`${baseUrl}/logs/snapshot`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ table: label, rows: rows })
+                    });
+
+                    if (res.status === 400) {
+                        const { errors } = await res.json();
+                        console.error('Sending table snapshot rejected: ', errors);
+                    }
+                } catch {
+                    console.error('Table snapshot not sent');
+                }
+            }
+        }
     }
 }
