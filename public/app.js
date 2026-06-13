@@ -1,6 +1,8 @@
 import store from './store.js';
+import tableStore from './table-store.js';
 import connect from './socket.js';
 import createLogElement from './log-creator.js';
+import renderTable from './table-renderer.js';
 
 connect();
 
@@ -55,6 +57,16 @@ function processLogs() {
 
 requestAnimationFrame(processLogs);
 
+function processTables() {
+    const tables = tableStore.getPending();
+    tables.forEach(table => {
+        renderTable(table);
+    });
+
+    requestAnimationFrame(processTables);
+}
+
+requestAnimationFrame(processTables);
 
 function isAtBottom(el, threshold = 80) {
     return (el.scrollHeight - el.scrollTop - el.clientHeight) <= threshold;

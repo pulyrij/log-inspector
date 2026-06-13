@@ -1,4 +1,5 @@
 import store from './store.js';
+import tableStore from './table-store.js';
 
 const PORT = 3000;
 const RETRY_DELAY = 10_000;
@@ -18,6 +19,9 @@ export default function connect() {
         const message = JSON.parse(event.data);
 
         if (message.type === 'LOG') store.add(message.payload);
+        if (message.type === 'TABLE_SETUP') tableStore.addTable(message.payload);
+        if (message.type === 'TABLE_SNAPSHOT') 
+            tableStore.updateSnapshot(message.payload.label, message.payload.rows);
     };
 
     socket.onclose = () => {
