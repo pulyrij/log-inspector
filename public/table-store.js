@@ -5,7 +5,8 @@ class TableStore {
         if (this.#tables.has(config.label)) return;
         this.#tables.set(config.label, {
             config,
-            rows: []
+            rows: [],
+            pendig: true
         });
     }
 
@@ -39,4 +40,9 @@ class TableStore {
 }
 
 const tableStore = new TableStore();
+tableStore.addTable({
+    label: 'trade',
+    columns: [1, 2, 3, 4],
+    rowCount: 20
+});
 export default tableStore;
