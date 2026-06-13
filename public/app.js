@@ -26,7 +26,7 @@ document.getElementById('tab-table').addEventListener('click', (el) => {
     viewTable.hidden = false;
 });
 
-const scroller = document.getElementById('main');
+const scroller = document.getElementById('view-main');
 
 const logContainer = document.getElementById('log-container');
 
@@ -58,6 +58,7 @@ function processLogs() {
 requestAnimationFrame(processLogs);
 
 function processTables() {
+    console.log(3)
     const tables = tableStore.getPending();
     tables.forEach(table => {
         renderTable(table);

@@ -32,20 +32,20 @@ body {
 #top-bar {
     background-color: var(--color-log-container);
 }
-#main {
+#view-main {
     scrollbar-color: var(--color-log-container) transparent;
 }
-#main::-webkit-scrollbar {
+#view-main::-webkit-scrollbar {
     width: 12px;
 }
-#main::-webkit-scrollbar-track {
+#view-main::-webkit-scrollbar-track {
     background: transparent;
 }
-#main::-webkit-scrollbar-thumb {
+#view-main::-webkit-scrollbar-thumb {
     background: var(--color-log-container);
     border-radius: 999px;
 }
-#log-container {
+#log-container, .trade-table {
     background-color: var(--color-log-container);
 }
 .log {

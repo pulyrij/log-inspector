@@ -24,7 +24,7 @@ html, body {
     height: 100dvh;
     gap: 8px;
 }
-#main {
+#view-main {
     flex: 1;
     min-height: 0;
 
@@ -51,7 +51,20 @@ html, body {
 }
 
 #view-table {
+    flex: 1;
+    flex-direction: column;
+
     display: none;
+
+    width: 915px;
+    max-width: 100%;
+    margin-inline: auto;
+    min-height: 0;
+
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    gap: 16px;
 }
 #view-table:not([hidden]) {
     display: flex;
