@@ -51,21 +51,30 @@ html, body {
 }
 
 #view-table {
-    flex: 1;
-    flex-direction: column;
-
     display: none;
 
     width: 915px;
     max-width: 100%;
     margin-inline: auto;
-    min-height: 0;
 
     overflow-y: auto;
     overscroll-behavior: contain;
-
-    gap: 16px;
 }
 #view-table:not([hidden]) {
+    display: block;
+}
+#table-container {
     display: flex;
+    flex-direction: column;
+
+    padding-top: 8px;
+    padding-bottom: 16px;
+    gap: 16px;
+}
+caption {
+    background: transparent;
+    color: #ffffff;
+    
+    font-size: 20px;
+    font-weight: bold;
 }

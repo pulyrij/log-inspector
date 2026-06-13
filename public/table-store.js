@@ -45,4 +45,14 @@ tableStore.addTable({
     columns: [1, 2, 3, 4],
     rowCount: 20
 });
+tableStore.addTable({
+    label: 'trade2',
+    columns: [1, 2, 3, 4],
+    rowCount: 20
+});
+// tableStore.addTable({
+//     label: 'trade3',
+//     columns: [1, 2, 3, 4],
+//     rowCount: 20
+// });
 export default tableStore;

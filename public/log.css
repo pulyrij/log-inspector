@@ -5,6 +5,9 @@
     min-width: 0;
     flex-shrink: 0;
 
+    border-radius: 4px;
+    overflow: hidden;
+
     animation: log-in 200ms ease-out both;
 }
 .log-header,

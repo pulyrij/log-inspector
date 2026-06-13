@@ -6,24 +6,6 @@
     --color-log-container: #151f33;
     --color-meta: #0f0c22;
     --color-error-bg: #0c1122;
-
-    --color-info-1: #34db3c;
-    --color-info-2: #378034;
-
-    --color-warn-1: #fffc37;
-    --color-warn-2: #bcc26d;
-
-    --color-event-1: #18ffc5;
-    --color-event-2: #22977a;
-
-    --color-error-1: #ff915e;
-    --color-error-2: #ce6e42;
-
-    --color-error-meta-1: #ff8585;
-    --color-error-meta-2: #ff7777;
-    --color-error-meta-3: #ff6d6d;
-    --color-error-meta-4: #a13333;
-    --color-error-meta-5: #792626;
 }
 
 body {
@@ -32,93 +14,22 @@ body {
 #top-bar {
     background-color: var(--color-log-container);
 }
-#view-main {
+#view-main, #view-table {
     scrollbar-color: var(--color-log-container) transparent;
 }
-#view-main::-webkit-scrollbar {
+#view-main::-webkit-scrollbar,
+#view-table::-webkit-scrollbar {
     width: 12px;
 }
-#view-main::-webkit-scrollbar-track {
+#view-main::-webkit-scrollbar-track,
+#view-table::-webkit-scrollbar-track {
     background: transparent;
 }
-#view-main::-webkit-scrollbar-thumb {
+#view-main::-webkit-scrollbar-thumb,
+#view-table::-webkit-scrollbar-thumb {
     background: var(--color-log-container);
     border-radius: 999px;
 }
-#log-container, .trade-table {
+#log-container, .trade-table, caption {
     background-color: var(--color-log-container);
-}
-.log {
-    border-radius: 4px;
-    overflow: hidden;
-}
-.log-header,
-.error-header {
-    background-color: var(--color-bg);
-    font-weight: bold;
-}
-.layout.meta {
-    background-color: var(--color-meta);
-}
-.log-header.alert.info time,
-.log-header.alert.info .service,
-.layout.alert.info .meta-key {
-    color: var(--color-info-2);
-}
-.log-header.alert.info .message,
-.layout.alert.info .meta-value {
-    color: var(--color-info-1);
-}
-.log-header.alert.warn time,
-.log-header.alert.warn .service,
-.layout.alert.warn .meta-key {
-    color: var(--color-warn-2);
-}
-.log-header.alert.warn .message,
-.layout.alert.warn .meta-value {
-    color: var(--color-warn-1);
-}
-.log-header.alert.event time,
-.log-header.alert.event .service,
-.layout.alert.event .meta-key {
-    color: var(--color-event-2);
-}
-.log-header.alert.event .message,
-.layout.alert.event .meta-value {
-    color: var(--color-event-1);
-}
-.log-header.error time,
-.log-header.error .service,
-.layout .meta-key {
-    color: var(--color-error-2);
-}
-.log-header.error .message,
-.layout .meta-value,
-.error-stack {
-    color: var(--color-error-1);
-}
-.meta-row.error,
-.layout.error-meta,
-.layout.error-stack {
-    background-color: var(--color-error-bg);
-}
-.severity-1,
-.severity-2 {
-    color: var(--color-error-meta-1);
-}
-.severity-3,
-.severity-4 {
-    color: var(--color-error-meta-2);
-}
-.severity-5,
-.severity-6 {
-    color: var(--color-error-meta-3);
-}
-.severity-7,
-.severity-8 {
-    color: var(--color-error-meta-4);
-}
-.severity-9,
-.severity-10 {
-    color: var(--color-error-meta-5);
 }
