@@ -5,10 +5,11 @@ const LOG_TYPES = ['alert', 'error', 'data'];
 class Engine{
     #store;
     #subscribers;
+    #tables;
     constructor() {
         this.#store = [];
         this.#subscribers = new Set();
-        this.tables = new Map();
+        this.#tables = new Map();
     }
     receiveLog(rawLog) {
         const { isValid, errors } = this.#validateRawLog(rawLog);
@@ -38,6 +39,12 @@ class Engine{
     }
     getHistory() {
         return this.#store.map(log => this.#createLogViewModel(log));
+    }
+    getTables() {
+        return [...this.#tables.entries()].map(([lable, table]) => ({
+            config: { label, columns: table.columns, rowCount: table.rowCount },
+            lastSnapshot: table.lastSnapshot ?? null
+        }));
     }
     #validateRawLog(log) {
         if (!log || typeof log !== 'object') {
@@ -169,8 +176,8 @@ class Engine{
 
         return vm;
     }
-    receiveTable(rawSetup) {
-        const { isValid, errors } = this.#validateTableSetup(rawSetup);
+    receiveTable(setup) {
+        const { isValid, errors } = this.#validateTableSetup(setup);
 
         if (!isValid) {
             return {
@@ -179,6 +186,16 @@ class Engine{
             }
         }
 
+        const { label, columns, rowCount } = setup;
+
+        this.#tables.set(label, { columns, rowCount });
+
+        this.#subscribers.forEach(cb => cb({ type: 'TABLE_SETUP', payload: setup }));
+
+        return {
+            statusCode: 200,
+            body: { ok: true }
+        }
     }
     #validateTableSetup(setup) {
         if (typeof setup !== 'object' || setup === null) {
@@ -203,8 +220,8 @@ class Engine{
 
         return { isValid: errors.length === 0, errors }
     }
-    receiveSnapshot(rawSnapshot) {
-        const { isValid, errors } = this.#validateTableSnapshot();
+    receiveSnapshot(snapshot) {
+        const { isValid, errors } = this.#validateTableSnapshot(snapshot);
 
         if (!isValid) {
             return {
@@ -213,6 +230,36 @@ class Engine{
             }
         }
         
+        const { label, rows } = snapshot;
+        this.#tables.get(label).lastSnapshot = rows;
+
+        this.#subscribers.forEach(cb => cb({ type: 'TABLE_SNAPSHOT', payload: snapshot }));
+
+        return {
+            statusCode: 200,
+            body: { ok: true }
+        }
+    }
+
+    #validateTableSnapshot(snapshot) {
+        if (typeof snapshot !== 'object' || snapshot === null) {
+            return { isValid: false, errors: ['snapshot must be an object'] };
+        }
+
+        const errors = [];
+        const { label, rows } = snapshot;
+
+        if (typeof label !== 'string') {
+            errors.push('label must be a string');
+        }
+        if (!this.#tables.has(label)) {
+            errors.push('no such table created');
+        }
+        if (!Array.isArray(rows) || rows.length === 0) {
+            errors.push('rows must be an array');
+        }
+
+        return { isValid: errors.length === 0, errors }
     }
 }
 

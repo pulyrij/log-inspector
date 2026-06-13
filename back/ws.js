@@ -15,15 +15,21 @@ export function initWS(server) {
     });
 
     wss.on('connection', (ws) => {
-        const unsubscribe = engine.dispatch((log) => {
+        const send = (data) => {
             if (ws.readyState === ws.OPEN) {
-                ws.send(JSON.stringify({ type: 'LOG', payload: log }));
+                ws.send(JSON.stringify(data));
             }
+        }
+        const unsubscribe = engine.dispatch(event => send(event));
+        
+        
+        engine.getHistory().forEach(log => {
+            send({ type: 'LOG', payload: log });
         });
 
-        engine.getHistory().forEach(log => {
-            if (ws.readyState === ws.OPEN)
-                ws.send(JSON.stringify({ type: 'LOG', payload: log }));
+        engine.getTables().forEach(({ config, lastSnapshot }) => {
+            send({ type: 'TABLE_SETUP', payload: config });
+            if (lastSnapshot) send({ type: 'TABLE_SNAPSHOT', payload: lastSnapshot });
         });
             
         ws.on('close', () => unsubscribe());
