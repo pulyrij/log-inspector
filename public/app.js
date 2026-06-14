@@ -58,7 +58,6 @@ function processLogs() {
 requestAnimationFrame(processLogs);
 
 function processTables() {
-    console.log(3)
     const tables = tableStore.getPending();
     tables.forEach(table => {
         renderTable(table);

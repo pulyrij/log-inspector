@@ -41,17 +41,41 @@ class TableStore {
 
 const tableStore = new TableStore();
 tableStore.addTable({
-    label: 'trade',
-    columns: [1, 2, 3, 4],
-    rowCount: 20
-});
-tableStore.addTable({
-    label: 'trade2',
-    columns: [1, 2, 3, 4],
+    label: 'Trade rustskins -> dmarket',
+    columns: [{
+        name: 'I',
+        width: 3
+    }, {
+        name: 'Item',
+        width: 50
+    }, {
+        name: 'Market 1',
+        width: 9
+    }, {
+        name: 'Price 1',
+        width: 9
+    }, {
+        name: 'Market 2',
+        width: 9
+    }, {
+        name: 'Price 2',
+        width: 9
+    }, {
+        name: 'Profit',
+        width: 9
+    }, {
+        name: 'C',
+        width: 2
+    }],
     rowCount: 20
 });
 // tableStore.addTable({
-//     label: 'trade3',
+//     label: 'Trade2 lootfarm -> cstrade',
+//     columns: [1, 2, 3, 4],
+//     rowCount: 20
+// });
+// tableStore.addTable({
+//     label: 'Trade3 dmarket -> rust skins',
 //     columns: [1, 2, 3, 4],
 //     rowCount: 20
 // });

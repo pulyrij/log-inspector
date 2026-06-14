@@ -71,10 +71,3 @@ html, body {
     padding-bottom: 16px;
     gap: 16px;
 }
-caption {
-    background: transparent;
-    color: #ffffff;
-    
-    font-size: 20px;
-    font-weight: bold;
-}

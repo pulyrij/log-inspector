@@ -1,0 +1,22 @@
+.trade-table {
+    border: 2px solid var(--color-meta);
+}
+caption {
+    caption-side: top;
+    text-align: left;
+    color: #ffffff;
+
+    border-top: 2px solid var(--color-meta);
+    border-left: 2px solid var(--color-meta);
+    border-right: 2px solid var(--color-meta);
+
+    padding: 4px 12px;
+    
+    font-size: 26px;
+    font-weight: bold;
+}
+
+th {
+    color: #ffffff;
+    font-weight: bold;
+}

@@ -1,5 +1,4 @@
 export default function renderTable(table) {
-    console.log(2)
     let tableEl = document.querySelector(`[data-table="${table.config.label}"]`);
 
     if (!tableEl) {
@@ -16,7 +15,6 @@ const THEAD_HEIGHT = 36;
 const CAPTION_HEIGHT = 40;
 
 function createTableElement(config) {
-    console.log(1);
     const tableEl = document.createElement('table');
     tableEl.classList.add('trade-table');
     tableEl.dataset.table = config.label;
@@ -28,6 +26,31 @@ function createTableElement(config) {
     tableCaption.textContent = config.label;
     tableCaption.style.height = `${CAPTION_HEIGHT}px`;
     tableEl.appendChild(tableCaption);
+
+    const colgroup = document.createElement('colgroup');
+
+    config.columns.forEach(column => {
+        const col = document.createElement('col');
+        col.style.width = `${column.width}%`;
+        colgroup.appendChild(col);
+    });
+
+    tableEl.appendChild(colgroup);
+
+    const tableHead = document.createElement('thead');
+
+    const tableHeadRow = document.createElement('tr');
+    tableHeadRow.style.height = `${THEAD_HEIGHT}px`;
+
+    config.columns.forEach(column => {
+        const th = document.createElement('th');
+        th.setAttribute('scope', 'col');
+        th.textContent = column.name;
+        tableHeadRow.appendChild(th);
+    });
+
+    tableHead.appendChild(tableHeadRow);
+    tableEl.appendChild(tableHead);
 
     return tableEl;
 }
