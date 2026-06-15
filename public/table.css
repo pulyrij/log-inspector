@@ -19,4 +19,16 @@ caption {
 th {
     color: #ffffff;
     font-weight: bold;
+
+    border: 1px solid var(--color-meta);
+}
+td {
+    border: 1px solid var(--color-meta);
+}
+.int {
+    text-align: center;
+}
+.item, .market, .price, .percent {
+    text-align: left;
+    padding: 4px;
 }

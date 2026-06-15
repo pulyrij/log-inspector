@@ -43,31 +43,52 @@ const tableStore = new TableStore();
 tableStore.addTable({
     label: 'Trade rustskins -> dmarket',
     columns: [{
-        name: 'I',
-        width: 3
+        name: 'index',
+        title: 'I',
+        class: 'int',
+        width: 4
     }, {
-        name: 'Item',
-        width: 50
+        name: 'item-name',
+        title: 'Item',
+        class: 'item',
+        width: 43
     }, {
-        name: 'Market 1',
+        name: 'first-market',
+        title: 'Market 1',
+        class: 'market',
+        width: 12
+    }, {
+        name: 'first-price',
+        title: 'Price 1',
+        class: 'price',
+        width: 8
+    }, {
+        name: 'second-market',
+        title: 'Market 2',
+        class: 'market',
+        width: 12
+    }, {
+        name: 'second-price',
+        title: 'Price 2',
+        class: 'price',
+        width: 8
+    }, {
+        name: 'profit',
+        title: 'Profit',
+        class: 'percent',
         width: 9
     }, {
-        name: 'Price 1',
-        width: 9
-    }, {
-        name: 'Market 2',
-        width: 9
-    }, {
-        name: 'Price 2',
-        width: 9
-    }, {
-        name: 'Profit',
-        width: 9
-    }, {
-        name: 'C',
-        width: 2
+        name: 'count',
+        title: 'C',
+        class: 'int',
+        width: 4
     }],
-    rowCount: 20
+    rowCount: 20,
+    options: {
+        capthinHeight: 40,
+        headerHeight: 36,
+        rowHeight: 32
+    }
 });
 // tableStore.addTable({
 //     label: 'Trade2 lootfarm -> cstrade',

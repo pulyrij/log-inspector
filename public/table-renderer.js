@@ -10,49 +10,63 @@ export default function renderTable(table) {
     updateRows(tableEl, table.config, table.rows);
 }
 
-const ROW_HEIGHT = 32;
-const THEAD_HEIGHT = 36;
-const CAPTION_HEIGHT = 40;
-
 function createTableElement(config) {
-    const tableEl = document.createElement('table');
-    tableEl.classList.add('trade-table');
-    tableEl.dataset.table = config.label;
+    const { label, columns, rowCount, options } = config;
 
-    const tableHeight = CAPTION_HEIGHT + THEAD_HEIGHT + ROW_HEIGHT * config.rowCount;
-    tableEl.style.height = `${tableHeight}px`;
+    const table = document.createElement('table');
+    table.classList.add('trade-table');
+    table.dataset.table = label;
 
-    const tableCaption = document.createElement('caption');
-    tableCaption.textContent = config.label;
-    tableCaption.style.height = `${CAPTION_HEIGHT}px`;
-    tableEl.appendChild(tableCaption);
+    const tableHeight = options.captionHeight + options.headerHight + options.rowHeight * rowCount;
+    table.style.height = `${tableHeight}px`;
+
+    const caption = document.createElement('caption');
+    caption.textContent = label;
+    caption.style.height = `${options.captionHeight}px`;
+    table.appendChild(caption);
 
     const colgroup = document.createElement('colgroup');
 
-    config.columns.forEach(column => {
+    columns.forEach(column => {
         const col = document.createElement('col');
         col.style.width = `${column.width}%`;
         colgroup.appendChild(col);
     });
 
-    tableEl.appendChild(colgroup);
+    table.appendChild(colgroup);
 
-    const tableHead = document.createElement('thead');
+    const header = document.createElement('thead');
 
-    const tableHeadRow = document.createElement('tr');
-    tableHeadRow.style.height = `${THEAD_HEIGHT}px`;
+    const headerRow = document.createElement('tr');
+    headerRow.style.height = `${options.headerHight}px`;
 
-    config.columns.forEach(column => {
+    columns.forEach(column => {
         const th = document.createElement('th');
-        th.setAttribute('scope', 'col');
-        th.textContent = column.name;
-        tableHeadRow.appendChild(th);
+        th.scope = 'col';
+        th.classList.add(column.name);
+        th.textContent = column.title;
+        headerRow.appendChild(th);
     });
 
-    tableHead.appendChild(tableHeadRow);
-    tableEl.appendChild(tableHead);
+    header.appendChild(headerRow);
+    table.appendChild(header);
 
-    return tableEl;
+    const tbody = document.createElement('tbody');
+    
+    for (let i = 0; i < rowCount; i++) {
+        const tr = document.createElement('tr');
+        tr.style.height = `${options.rowHeight}px`;
+        columns.forEach(column => {
+            const td = document.createElement('td');
+            td.classList.add(column.name, column.class);
+            td.textContent = '_';
+            tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+    }
+    table.appendChild(tbody);
+
+    return table;
 }
 
 function updateRows(tableEl, config, rows) {
