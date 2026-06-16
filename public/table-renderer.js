@@ -1,21 +1,24 @@
-export default function renderTable(table) {
-    let tableEl = document.querySelector(`[data-table="${table.config.label}"]`);
+export default function renderTable(tableVm) {
+    const { config, rows } = tableVm;
 
-    if (!tableEl) {
-        tableEl = createTableElement(table.config);
+    let table = document.querySelector(`[data-table="${config.id}"]`);
+
+    if (!table) {
+        table = createTableElement(config);
         const tableContainer = document.getElementById('table-container');
-        tableContainer.appendChild(tableEl);
+        tableContainer.appendChild(table);
     }
 
-    updateRows(tableEl, table.config, table.rows);
+    console.log('1')
+    updateRows(table, rows);
 }
 
 function createTableElement(config) {
-    const { label, columns, rowCount, options } = config;
+    const { id, label, columns, rowCount, options } = config;
 
     const table = document.createElement('table');
     table.classList.add('trade-table');
-    table.dataset.table = label;
+    table.dataset.table = id;
 
     const tableHeight = options.captionHeight + options.headerHight + options.rowHeight * rowCount;
     table.style.height = `${tableHeight}px`;
@@ -38,12 +41,12 @@ function createTableElement(config) {
     const header = document.createElement('thead');
 
     const headerRow = document.createElement('tr');
-    headerRow.style.height = `${options.headerHight}px`;
+    headerRow.style.height = `${options.headerHeight}px`;
 
     columns.forEach(column => {
         const th = document.createElement('th');
         th.scope = 'col';
-        th.classList.add(column.name);
+        th.classList.add(column.key);
         th.textContent = column.title;
         headerRow.appendChild(th);
     });
@@ -58,8 +61,9 @@ function createTableElement(config) {
         tr.style.height = `${options.rowHeight}px`;
         columns.forEach(column => {
             const td = document.createElement('td');
-            td.classList.add(column.name, column.class);
-            td.textContent = '_';
+            td.dataset.col = column.key;
+            td.classList.add(column.key, column.class);
+            td.textContent = '—';
             tr.appendChild(td);
         });
         tbody.appendChild(tr);
@@ -69,6 +73,28 @@ function createTableElement(config) {
     return table;
 }
 
-function updateRows(tableEl, config, rows) {
-    
+function updateRows(table, rows) {
+    const tbody = table.querySelector('tbody');
+    const domRows = tbody.querySelectorAll('tr');
+
+    rows.forEach((rowData, i) => {
+        const tr = domRows[i];
+        if (!tr) return;
+
+        tr.dataset.name = rowData.name;
+        
+        tr.querySelectorAll('td').forEach(td => {
+            const newValue = String(rowData[td.dataset.col] ?? '—');
+            if (td.textContent !== newValue) {
+                td.textContent = newValue;
+            }
+        });
+    });
+
+    for (let i = rows.length; i < domRows.length; i++) {
+        const tr = domRows[i];
+        if (tr.dataset.name === '') return;
+        tr.dataset.name = '';
+        tr.querySelectorAll('td').forEach(td => td.textContent = '—');
+    }
 }

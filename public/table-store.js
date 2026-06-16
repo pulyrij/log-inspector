@@ -6,7 +6,7 @@ class TableStore {
         this.#tables.set(config.label, {
             config,
             rows: [],
-            pendig: true
+            pending: true
         });
     }
 
@@ -21,7 +21,7 @@ class TableStore {
         const result = [];
         
         for ( const table of this.#tables.values()) {
-            if (table.pendig) {
+            if (table.pending) {
                 result.push(table);
                 table.pending = false;
             }
@@ -41,44 +41,45 @@ class TableStore {
 
 const tableStore = new TableStore();
 tableStore.addTable({
+    id: 'tradeRD',
     label: 'Trade rustskins -> dmarket',
     columns: [{
-        name: 'index',
+        key: 'index',
         title: 'I',
         class: 'int',
         width: 4
     }, {
-        name: 'item-name',
+        key: 'item_name',
         title: 'Item',
         class: 'item',
         width: 43
     }, {
-        name: 'first-market',
+        key: 'first_market',
         title: 'Market 1',
         class: 'market',
         width: 12
     }, {
-        name: 'first-price',
+        key: 'first_price',
         title: 'Price 1',
         class: 'price',
         width: 8
     }, {
-        name: 'second-market',
+        key: 'second_market',
         title: 'Market 2',
         class: 'market',
         width: 12
     }, {
-        name: 'second-price',
+        key: 'second_price',
         title: 'Price 2',
         class: 'price',
         width: 8
     }, {
-        name: 'profit',
+        key: 'profit',
         title: 'Profit',
         class: 'percent',
         width: 9
     }, {
-        name: 'count',
+        key: 'count',
         title: 'C',
         class: 'int',
         width: 4
@@ -90,6 +91,48 @@ tableStore.addTable({
         rowHeight: 32
     }
 });
+tableStore.updateSnapshot('tradeRD', [
+    {
+        index: 1,
+        item_name: 'Blackout Python',
+        first_market: 'rustskins',
+        first_price: 4.67,
+        second_market: 'dmarket',
+        second_price: 5.02,
+        profit: 13,
+        count: 1
+    },
+    {
+        index: 2,
+        item_name: 'Large Candle Set',
+        first_market: 'rustskins',
+        first_price: 3.02,
+        second_market: 'dmarket',
+        second_price: 3.06,
+        profit: 0.33,
+        count: 1
+    },
+    {
+        index: 3,
+        item_name: 'Red Jacet',
+        first_market: 'rustskins',
+        first_price: 0.15,
+        second_market: 'dmarket',
+        second_price: 0.15,
+        profit: 0,
+        count: 22
+    },
+    {
+        index: 4,
+        item_name: 'Ninja AR',
+        first_market: 'rustskins',
+        first_price: 1.52,
+        second_market: 'dmarket',
+        second_price: 1.43,
+        profit: -7,
+        count: 1
+    }
+]);
 // tableStore.addTable({
 //     label: 'Trade2 lootfarm -> cstrade',
 //     columns: [1, 2, 3, 4],
