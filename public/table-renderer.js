@@ -62,7 +62,7 @@ function createTableElement(config) {
         columns.forEach(column => {
             const td = document.createElement('td');
             td.dataset.col = column.key;
-            td.classList.add(column.key, column.class);
+            td.classList.add(column.key, column.class, 'empty');
             td.textContent = '—';
             tr.appendChild(td);
         });
@@ -84,9 +84,14 @@ function updateRows(table, rows) {
         tr.dataset.name = rowData.name;
         
         tr.querySelectorAll('td').forEach(td => {
-            const newValue = String(rowData[td.dataset.col] ?? '—');
+            let newValue = String(rowData[td.dataset.col] ?? '—');
             if (td.textContent !== newValue) {
                 td.classList.toggle('empty', newValue === '—');
+
+                if (td.classList.contains('percent')) {
+                    newValue = updateProfit(td, newValue);
+                }
+
                 td.textContent = newValue;
             }
         });
@@ -98,4 +103,25 @@ function updateRows(table, rows) {
         tr.dataset.name = '';
         tr.querySelectorAll('td').forEach(td => td.textContent = '—');
     }
+}
+function updateProfit(tdEl, newValue) {
+    if (newValue === '—') {
+        tdEl.classList.remove('profit-positive', 'profit-negative', 'profit-zero');
+        return;
+    }
+    const oldValue = tdEl.textContent;
+    const oldValueProfitSign = getProfitClass(parseInt(oldValue));
+    const newValueProfitSign = getProfitClass(newValue);
+
+    if (newValueProfitSign !== oldValueProfitSign) {
+        tdEl.classList.remove('profit-positive', 'profit-negative', 'profit-zero');
+        tdEl.classList.add(newValueProfitSign);
+    }
+
+    return `${newValue}%`;
+}
+function getProfitClass(profit) {
+    if (profit > 0) return 'profit-positive';
+    if (profit < 0) return 'profit-negative';
+    return 'profit-zero';
 }
