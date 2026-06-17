@@ -86,6 +86,7 @@ function updateRows(table, rows) {
         tr.querySelectorAll('td').forEach(td => {
             const newValue = String(rowData[td.dataset.col] ?? '—');
             if (td.textContent !== newValue) {
+                td.classList.toggle('empty', newValue === '—');
                 td.textContent = newValue;
             }
         });

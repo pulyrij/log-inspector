@@ -2,8 +2,8 @@ class TableStore {
     #tables = new Map();
 
     addTable(config) {
-        if (this.#tables.has(config.label)) return;
-        this.#tables.set(config.label, {
+        if (this.#tables.has(config.id)) return;
+        this.#tables.set(config.id, {
             config,
             rows: [],
             pending: true

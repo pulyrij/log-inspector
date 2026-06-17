@@ -24,8 +24,13 @@ th {
     font-weight: bold;
 }
 td {
+    color: #ffffff;
+
     text-align: left;
     padding: 4px;
+}
+td.empty {
+    color: #000000;
 }
 td.int {
     text-align: center;
