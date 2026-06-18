@@ -100,6 +100,7 @@ tableStore.updateSnapshot('tradeRD', [
         second_market: 'dmarket',
         second_price: 5.02,
         profit: 13,
+        profit_sign: 'positive',
         count: 1
     },
     {
@@ -110,6 +111,7 @@ tableStore.updateSnapshot('tradeRD', [
         second_market: 'dmarket',
         second_price: 3.06,
         profit: 0.33,
+        profit_sign: 'positive',
         count: 1
     },
     {
@@ -120,6 +122,7 @@ tableStore.updateSnapshot('tradeRD', [
         second_market: 'dmarket',
         second_price: 0.15,
         profit: 0,
+        profit_sign: 'zero',
         count: 22
     },
     {
@@ -130,6 +133,7 @@ tableStore.updateSnapshot('tradeRD', [
         second_market: 'dmarket',
         second_price: 1.43,
         profit: -7,
+        profit_sign: 'negative',
         count: 1
     }
 ]);
