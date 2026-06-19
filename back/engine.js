@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import { normalizeError } from './errors.js';
 
 const LOG_TYPES = ['alert', 'error', 'data'];

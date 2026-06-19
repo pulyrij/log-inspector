@@ -89,7 +89,8 @@ function updateRows(table, rows) {
                 td.classList.toggle('empty', newValue === '—');
 
                 if (td.classList.contains('percent')) {
-                    newValue = updateProfit(td, newValue);
+                    td.classList.remove('profit-positive', 'profit-negative', 'profit-zero');
+                    td.classList.add(`profit-${rowData.profit_sign}`);
                 }
 
                 td.textContent = newValue;
