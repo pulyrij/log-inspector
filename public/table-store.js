@@ -86,7 +86,7 @@ tableStore.addTable({
     }],
     rowCount: 20,
     options: {
-        capthinHeight: 40,
+        captionHeight: 40,
         headerHeight: 36,
         rowHeight: 32
     }

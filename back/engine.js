@@ -42,8 +42,8 @@ class Engine{
         return this.#store.map(log => this.#createLogViewModel(log));
     }
     getTables() {
-        return [...this.#tables.entries()].map(([lable, table]) => ({
-            config: { label, columns: table.columns, rowCount: table.rowCount },
+        return [...this.#tables.entries()].map(([id, table]) => ({
+            config: { id, label: table.label, columns: table.columns, rowCount: table.rowCount },
             lastSnapshot: table.lastSnapshot ?? null
         }));
     }
@@ -177,6 +177,9 @@ class Engine{
 
         return vm;
     }
+    #labelToId(label) {
+        return crypto.createHash('md5').update(label).digest('hex').slice(0, 8);
+    };
     receiveTable(setup) {
         const { isValid, errors } = this.#validateTableSetup(setup);
 
@@ -189,7 +192,11 @@ class Engine{
 
         const { label, columns, rowCount } = setup;
 
-        this.#tables.set(label, { columns, rowCount });
+        const id = this.#labelToId(label);
+
+        this.#tables.set(id, { label, columns, rowCount });
+
+        setup = { id, ...setup };
 
         this.#subscribers.forEach(cb => cb({ type: 'TABLE_SETUP', payload: setup }));
 
@@ -209,7 +216,7 @@ class Engine{
         if (typeof label !== 'string') {
             errors.push('label must be a string');
         }
-        if (this.tables.has(label)) {
+        if (this.#tables.has(label)) {
             errors.push(`table '${label}' already exists`);
         }
         if (!Array.isArray(columns) || columns.length === 0) {
@@ -218,6 +225,12 @@ class Engine{
         if (typeof rowCount !== 'number') {
             errors.push('rowCount must be a number');
         }
+
+        columns.forEach(col => {
+            if (typeof col.key !== 'string') {
+                errors.push('key must be provided for each column');
+            }
+        });
 
         return { isValid: errors.length === 0, errors }
     }

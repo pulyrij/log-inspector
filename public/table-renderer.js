@@ -13,6 +13,12 @@ export default function renderTable(tableVm) {
     updateRows(table, rows);
 }
 
+const defaults = {
+    CAPTION_HEIGHT: 40,
+    HEADER_HEIGHT: 36,
+    ROW_HEIGHT: 32
+}
+
 function createTableElement(config) {
     const { id, label, columns, rowCount, options } = config;
 
@@ -20,12 +26,17 @@ function createTableElement(config) {
     table.classList.add('trade-table');
     table.dataset.table = id;
 
-    const tableHeight = options.captionHeight + options.headerHight + options.rowHeight * rowCount;
+
+    const captionHeight = options?.captionHeight ?? defaults.CAPTION_HEIGHT;
+    const headerHeight = options?.headerHeight ?? defaults.HEADER_HEIGHT;
+    const rowHeight = options?.rowHeight ?? defaults.ROW_HEIGHT;
+    const tableHeight = captionHeight + headerHeight + rowHeight * rowCount;
+
     table.style.height = `${tableHeight}px`;
 
     const caption = document.createElement('caption');
     caption.textContent = label;
-    caption.style.height = `${options.captionHeight}px`;
+    caption.style.height = `${captionHeight}px`;
     table.appendChild(caption);
 
     const colgroup = document.createElement('colgroup');
@@ -41,7 +52,7 @@ function createTableElement(config) {
     const header = document.createElement('thead');
 
     const headerRow = document.createElement('tr');
-    headerRow.style.height = `${options.headerHeight}px`;
+    headerRow.style.height = `${headerHeight}px`;
 
     columns.forEach(column => {
         const th = document.createElement('th');
@@ -58,7 +69,7 @@ function createTableElement(config) {
     
     for (let i = 0; i < rowCount; i++) {
         const tr = document.createElement('tr');
-        tr.style.height = `${options.rowHeight}px`;
+        tr.style.height = `${rowHeight}px`;
         columns.forEach(column => {
             const td = document.createElement('td');
             td.dataset.col = column.key;
@@ -91,6 +102,8 @@ function updateRows(table, rows) {
                 if (td.classList.contains('percent')) {
                     td.classList.remove('profit-positive', 'profit-negative', 'profit-zero');
                     td.classList.add(`profit-${rowData.profit_sign}`);
+                    td.textContent = `${newValue}%`;
+                    return;
                 }
 
                 td.textContent = newValue;

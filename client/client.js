@@ -123,14 +123,9 @@ export default class LoggerClient{
         });
         this.#sendLog(log);
     }
-    async createTableStream(label, columns, rowCount) {
+    async createTableStream(setup) {
         const baseUrl = this.baseUrl;
-        const setup = {
-            label,
-            columns,
-            rowCount
-        }
-
+        
         try {
             const res = await fetch(`${baseUrl}/logs/table`, {
                 method: 'POST',
