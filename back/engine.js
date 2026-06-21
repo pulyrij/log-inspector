@@ -180,6 +180,13 @@ class Engine{
     #labelToId(label) {
         return crypto.createHash('md5').update(label).digest('hex').slice(0, 8);
     };
+    #calcColumnsWidth(columns) {
+        const columnCount = columns.length;
+        const tiersSum;
+        columns.map(col => {
+            if (col) {}
+        });
+    }
     receiveTable(setup) {
         const { isValid, errors } = this.#validateTableSetup(setup);
 
@@ -194,6 +201,8 @@ class Engine{
 
         const id = this.#labelToId(label);
 
+
+
         this.#tables.set(id, { label, columns, rowCount });
 
         setup = { id, ...setup };
@@ -206,11 +215,17 @@ class Engine{
         }
     }
     #validateTableSetup(setup) {
+        const errors = [];
+
+        const response = () => {
+            return { isValid: errors.length === 0, errors }
+        };
+
         if (typeof setup !== 'object' || setup === null) {
-            return { isValid: false, errors: ['table setup must be an object'] };
+            errors.push('table setup must be an object');
+            return response();
         }
 
-        const errors = [];
         const { label, columns, rowCount } = setup;
 
         if (typeof label !== 'string') {
@@ -219,20 +234,33 @@ class Engine{
         if (this.#tables.has(label)) {
             errors.push(`table '${label}' already exists`);
         }
-        if (!Array.isArray(columns) || columns.length === 0) {
-            errors.push('columns must be an array');
-        }
         if (typeof rowCount !== 'number') {
             errors.push('rowCount must be a number');
         }
+        if (!Array.isArray(columns) || columns.length === 0) {
+            errors.push('columns must be an array');
+            return response();
+        }
 
-        columns.forEach(col => {
-            if (typeof col.key !== 'string') {
-                errors.push('key must be provided for each column');
-            }
-        });
+        const notObject = columns.some(col => typeof col !== 'object');
+        if (notObject) {
+            errors.push('every column must be an object');
+            return response();
+        }
 
-        return { isValid: errors.length === 0, errors }
+        const hasInvalidKey = columns.some(col => typeof col.key !== 'string');
+        if (hasInvalidKey) {
+            errors.push('key must be provided for each column');
+        }
+        
+        const getSign = col => JSON.stringify(Object.keys(col).sort());
+        const firstSign = getSign(columns[0]);
+        const sameSignatures = columns.every(col => getSign(col) === firstSign);
+        if (!sameSignatures) {
+            errors.push('every column signature must be the same');
+        }
+
+        return response();
     }
     receiveSnapshot(snapshot) {
         const { isValid, errors } = this.#validateTableSnapshot(snapshot);

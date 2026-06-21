@@ -51,12 +51,12 @@ tableStore.addTable({
     }, {
         key: 'item_name',
         title: 'Item',
-        class: 'item',
+        class: 'long_name',
         width: 43
     }, {
         key: 'first_market',
         title: 'Market 1',
-        class: 'market',
+        class: 'short_name',
         width: 12
     }, {
         key: 'first_price',
@@ -66,7 +66,7 @@ tableStore.addTable({
     }, {
         key: 'second_market',
         title: 'Market 2',
-        class: 'market',
+        class: 'short_name',
         width: 12
     }, {
         key: 'second_price',
