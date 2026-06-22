@@ -4,15 +4,20 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Logger Server",
             "skipFiles": [
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/back/server.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Logger Test Client",
+            "program": "${workspaceFolder}/client/test.js"
         }
     ]
 }

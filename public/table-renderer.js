@@ -105,6 +105,10 @@ function updateRows(table, rows) {
                     td.textContent = `${newValue}%`;
                     return;
                 }
+                if (td.classList.contains('price')) {
+                    td.textContent = `${newValue}$`;
+                    return;
+                }
 
                 td.textContent = newValue;
             }

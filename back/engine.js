@@ -180,13 +180,6 @@ class Engine{
     #labelToId(label) {
         return crypto.createHash('md5').update(label).digest('hex').slice(0, 8);
     };
-    #calcColumnsWidth(columns) {
-        const columnCount = columns.length;
-        const tiersSum;
-        columns.map(col => {
-            if (col) {}
-        });
-    }
     receiveTable(setup) {
         const { isValid, errors } = this.#validateTableSetup(setup);
 
@@ -211,7 +204,7 @@ class Engine{
 
         return {
             statusCode: 200,
-            body: { ok: true }
+            body: { ok: true, id }
         }
     }
     #validateTableSetup(setup) {
@@ -272,8 +265,8 @@ class Engine{
             }
         }
         
-        const { label, rows } = snapshot;
-        this.#tables.get(label).lastSnapshot = rows;
+        const { id, rows } = snapshot;
+        this.#tables.get(id).lastSnapshot = rows;
 
         this.#subscribers.forEach(cb => cb({ type: 'TABLE_SNAPSHOT', payload: snapshot }));
 
