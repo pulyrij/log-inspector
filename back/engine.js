@@ -277,24 +277,31 @@ class Engine{
     }
 
     #validateTableSnapshot(snapshot) {
-        if (typeof snapshot !== 'object' || snapshot === null) {
-            return { isValid: false, errors: ['snapshot must be an object'] };
-        }
-
         const errors = [];
-        const { label, rows } = snapshot;
 
-        if (typeof label !== 'string') {
-            errors.push('label must be a string');
+        const response = () => {
+            return { isValid: errors.length === 0, errors };
         }
-        if (!this.#tables.has(label)) {
+
+        if (typeof snapshot !== 'object' || snapshot === null) {
+            errors.push('snapshot must be an object');
+            return response();
+        }
+
+        const { id, rows } = snapshot;
+
+        if (typeof id !== 'string') {
+            errors.push('id must be a string');
+        }
+        if (!this.#tables.has(id)) {
             errors.push('no such table created');
         }
         if (!Array.isArray(rows) || rows.length === 0) {
             errors.push('rows must be an array');
+            return response();
         }
 
-        return { isValid: errors.length === 0, errors }
+        return response();
     }
 }
 

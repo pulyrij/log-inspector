@@ -9,7 +9,6 @@ export default function renderTable(tableVm) {
         tableContainer.appendChild(table);
     }
 
-    console.log('1')
     updateRows(table, rows);
 }
 

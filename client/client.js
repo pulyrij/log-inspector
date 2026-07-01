@@ -154,7 +154,7 @@ export default class LoggerClient{
                     const res = await fetch(`${baseUrl}/logs/snapshot`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ table: id, rows: rows })
+                        body: JSON.stringify({ id: this.id, rows: rows })
                     });
 
                     if (res.status === 400) {

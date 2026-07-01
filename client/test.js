@@ -3,7 +3,7 @@ import LoggerClient from './client.js';
 const log = new LoggerClient('http://10.110.20.120:3000');
 
 const table = await log.createTableStream({
-    label: 'Testing transport and jj',
+    label: 'Pidor',
     columns: [
         {
             key: 'index',
