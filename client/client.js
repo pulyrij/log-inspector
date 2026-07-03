@@ -123,14 +123,10 @@ export default class LoggerClient{
         });
         this.#sendLog(log);
     }
-    async createTableStream(label, columns, rowCount) {
+    async createTableStream(setup) {
         const baseUrl = this.baseUrl;
-        const setup = {
-            label,
-            columns,
-            rowCount
-        }
-
+        let tableId;
+        
         try {
             const res = await fetch(`${baseUrl}/logs/table`, {
                 method: 'POST',
@@ -142,26 +138,32 @@ export default class LoggerClient{
                 const { errors } = await res.json();
                 console.error('Creation of table rejected: ', errors);   
             }
+            if (res.status === 200) {
+                const { id } = await res.json();
+                tableId = id;
+            } 
         } catch {
             console.error('Creation setup not sent');
             return null;
         }
 
         return {
+            id: tableId,
             async update(rows) {
                 try {
                     const res = await fetch(`${baseUrl}/logs/snapshot`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ table: label, rows: rows })
+                        body: JSON.stringify({ id: this.id, rows: rows })
                     });
 
                     if (res.status === 400) {
                         const { errors } = await res.json();
                         console.error('Sending table snapshot rejected: ', errors);
                     }
-                } catch {
+                } catch (err) {
                     console.error('Table snapshot not sent');
+                    console.error(err);
                 }
             }
         }

@@ -21,7 +21,7 @@ export default function connect() {
         if (message.type === 'LOG') store.add(message.payload);
         if (message.type === 'TABLE_SETUP') tableStore.addTable(message.payload);
         if (message.type === 'TABLE_SNAPSHOT') 
-            tableStore.updateSnapshot(message.payload.label, message.payload.rows);
+            tableStore.updateSnapshot(message.payload.id, message.payload.rows);
     };
 
     socket.onclose = () => {

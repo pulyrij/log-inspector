@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import { normalizeError } from './errors.js';
 
 const LOG_TYPES = ['alert', 'error', 'data'];
@@ -41,8 +42,8 @@ class Engine{
         return this.#store.map(log => this.#createLogViewModel(log));
     }
     getTables() {
-        return [...this.#tables.entries()].map(([lable, table]) => ({
-            config: { label, columns: table.columns, rowCount: table.rowCount },
+        return [...this.#tables.entries()].map(([id, table]) => ({
+            config: { id, label: table.label, columns: table.columns, rowCount: table.rowCount },
             lastSnapshot: table.lastSnapshot ?? null
         }));
     }
@@ -176,6 +177,9 @@ class Engine{
 
         return vm;
     }
+    #labelToId(label) {
+        return crypto.createHash('md5').update(label).digest('hex').slice(0, 8);
+    };
     receiveTable(setup) {
         const { isValid, errors } = this.#validateTableSetup(setup);
 
@@ -188,37 +192,68 @@ class Engine{
 
         const { label, columns, rowCount } = setup;
 
-        this.#tables.set(label, { columns, rowCount });
+        const id = this.#labelToId(label);
+
+
+
+        this.#tables.set(id, { label, columns, rowCount });
+
+        setup = { id, ...setup };
 
         this.#subscribers.forEach(cb => cb({ type: 'TABLE_SETUP', payload: setup }));
 
         return {
             statusCode: 200,
-            body: { ok: true }
+            body: { ok: true, id }
         }
     }
     #validateTableSetup(setup) {
+        const errors = [];
+
+        const response = () => {
+            return { isValid: errors.length === 0, errors }
+        };
+
         if (typeof setup !== 'object' || setup === null) {
-            return { isValid: false, errors: ['table setup must be an object'] };
+            errors.push('table setup must be an object');
+            return response();
         }
 
-        const errors = [];
         const { label, columns, rowCount } = setup;
 
         if (typeof label !== 'string') {
             errors.push('label must be a string');
         }
-        if (this.tables.has(label)) {
+        if (this.#tables.has(this.#labelToId(label))) {
             errors.push(`table '${label}' already exists`);
-        }
-        if (!Array.isArray(columns) || columns.length === 0) {
-            errors.push('columns must be an array');
         }
         if (typeof rowCount !== 'number') {
             errors.push('rowCount must be a number');
         }
+        if (!Array.isArray(columns) || columns.length === 0) {
+            errors.push('columns must be an array');
+            return response();
+        }
 
-        return { isValid: errors.length === 0, errors }
+        const notObject = columns.some(col => typeof col !== 'object');
+        if (notObject) {
+            errors.push('every column must be an object');
+            return response();
+        }
+
+        const hasInvalidKey = columns.some(col => typeof col.key !== 'string');
+        if (hasInvalidKey) {
+            errors.push('key must be provided for each column');
+        }
+        
+        const getSign = col => JSON.stringify(Object.keys(col).sort());
+        const firstSign = getSign(columns[0]);
+        const sameSignatures = columns.every(col => getSign(col) === firstSign);
+        if (!sameSignatures) {
+            errors.push('every column signature must be the same');
+        }
+
+        return response();
     }
     receiveSnapshot(snapshot) {
         const { isValid, errors } = this.#validateTableSnapshot(snapshot);
@@ -230,8 +265,8 @@ class Engine{
             }
         }
         
-        const { label, rows } = snapshot;
-        this.#tables.get(label).lastSnapshot = rows;
+        const { id, rows } = snapshot;
+        this.#tables.get(id).lastSnapshot = rows;
 
         this.#subscribers.forEach(cb => cb({ type: 'TABLE_SNAPSHOT', payload: snapshot }));
 
@@ -242,24 +277,31 @@ class Engine{
     }
 
     #validateTableSnapshot(snapshot) {
-        if (typeof snapshot !== 'object' || snapshot === null) {
-            return { isValid: false, errors: ['snapshot must be an object'] };
-        }
-
         const errors = [];
-        const { label, rows } = snapshot;
 
-        if (typeof label !== 'string') {
-            errors.push('label must be a string');
+        const response = () => {
+            return { isValid: errors.length === 0, errors };
         }
-        if (!this.#tables.has(label)) {
+
+        if (typeof snapshot !== 'object' || snapshot === null) {
+            errors.push('snapshot must be an object');
+            return response();
+        }
+
+        const { id, rows } = snapshot;
+
+        if (typeof id !== 'string') {
+            errors.push('id must be a string');
+        }
+        if (!this.#tables.has(id)) {
             errors.push('no such table created');
         }
         if (!Array.isArray(rows) || rows.length === 0) {
             errors.push('rows must be an array');
+            return response();
         }
 
-        return { isValid: errors.length === 0, errors }
+        return response();
     }
 }
 

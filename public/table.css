@@ -24,10 +24,24 @@ th {
     font-weight: bold;
 }
 td {
+    color: #ffffff;
+
     text-align: left;
     padding: 4px;
+}
+td.empty {
+    color: #000000;
 }
 td.int {
     text-align: center;
     padding: 0;
+}
+td.profit.profit-positive {
+    color: #02b802;
+}
+td.profit.profit-negative {
+    color: #f01919;
+}
+td.profit.profit-zero {
+    color: #e7c323;
 }
