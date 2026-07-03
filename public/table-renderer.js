@@ -83,62 +83,67 @@ function createTableElement(config) {
     return table;
 }
 
-function updateRows(table, rows) {
-    const tbody = table.querySelector('tbody');
+const EMPTY = '—';
+
+const formatters = {
+    percent: (value) => value === EMPTY ? value : `${value}%`,
+    price: (value) => value === EMPTY ? value : `${value}$`,
+    default: (value) => value
+}
+
+const decorators = {
+    percent: (td, value, rowVm) => {
+        td.classList.remove('profit-positive', 'profit-negative', 'profit-zero');
+        if (value !== EMPTY) {
+            td.classList.add(`profit-${rowVm.profit_sign}`);
+        }
+    },
+
+}
+function getColumnType(td) {
+    if (td.classList.contains('percent')) return 'percent';
+    if (td.classList.contains('price')) return 'price';
+    return 'default';
+}
+
+function updateCell(td, rowVm) {
+    const type = getColumnType(td);
+
+    const oldValue = td.textContent;
+    let newValue = rowVm[td.dataset.col] ?? EMPTY;
+
+    const oldEmpty = oldValue === EMPTY;
+    const newEmpty = newValue === EMPTY;
+
+    if (oldEmpty && newEmpty) return;
+    
+    td.classList.toggle('empty', newEmpty);
+
+    newValue = (formatters[type] ?? formatters.default)(newValue);
+    if (newValue === oldValue) return;
+
+    if (!newEmpty) {
+        decorators[type]?.(td, newValue, rowVm);
+    }
+    td.textContent = newValue;
+}
+
+function updateRows(tableEl, rows) {
+    const tbody = tableEl.querySelector('tbody');
     const domRows = tbody.querySelectorAll('tr');
 
-    rows.forEach((rowData, i) => {
+    rows.forEach((rowVm, i) => {
         const tr = domRows[i];
         if (!tr) return;
 
-        tr.dataset.name = rowData.name;
-        
-        tr.querySelectorAll('td').forEach(td => {
-            let newValue = String(rowData[td.dataset.col] ?? '—');
-            if (td.textContent !== newValue) {
-                td.classList.toggle('empty', newValue === '—');
-
-                if (td.classList.contains('percent')) {
-                    td.classList.remove('profit-positive', 'profit-negative', 'profit-zero');
-                    td.classList.add(`profit-${rowData.profit_sign}`);
-                    td.textContent = `${newValue}%`;
-                    return;
-                }
-                if (td.classList.contains('price')) {
-                    td.textContent = `${newValue}$`;
-                    return;
-                }
-
-                td.textContent = newValue;
-            }
-        });
+        tr.dataset.name = rowVm.name
+        tr.querySelectorAll('td').forEach(td => updateCell(td, rowVm));
     });
 
     for (let i = rows.length; i < domRows.length; i++) {
         const tr = domRows[i];
         if (tr.dataset.name === '') continue;
         tr.dataset.name = '';
-        tr.querySelectorAll('td').forEach(td => td.textContent = '—');
+        tr.querySelectorAll('td').forEach(td => updateCell(td, {}));
     }
-}
-function updateProfit(tdEl, newValue) {
-    if (newValue === '—') {
-        tdEl.classList.remove('profit-positive', 'profit-negative', 'profit-zero');
-        return;
-    }
-    const oldValue = tdEl.textContent;
-    const oldValueProfitSign = getProfitClass(parseInt(oldValue));
-    const newValueProfitSign = getProfitClass(newValue);
-
-    if (newValueProfitSign !== oldValueProfitSign) {
-        tdEl.classList.remove('profit-positive', 'profit-negative', 'profit-zero');
-        tdEl.classList.add(newValueProfitSign);
-    }
-
-    return `${newValue}%`;
-}
-function getProfitClass(profit) {
-    if (profit > 0) return 'profit-positive';
-    if (profit < 0) return 'profit-negative';
-    return 'profit-zero';
 }
