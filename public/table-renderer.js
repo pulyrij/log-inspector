@@ -116,7 +116,7 @@ function updateRows(table, rows) {
 
     for (let i = rows.length; i < domRows.length; i++) {
         const tr = domRows[i];
-        if (tr.dataset.name === '') return;
+        if (tr.dataset.name === '') continue;
         tr.dataset.name = '';
         tr.querySelectorAll('td').forEach(td => td.textContent = '—');
     }

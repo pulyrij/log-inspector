@@ -224,7 +224,7 @@ class Engine{
         if (typeof label !== 'string') {
             errors.push('label must be a string');
         }
-        if (this.#tables.has(label)) {
+        if (this.#tables.has(this.#labelToId(label))) {
             errors.push(`table '${label}' already exists`);
         }
         if (typeof rowCount !== 'number') {
