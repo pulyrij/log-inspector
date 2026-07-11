@@ -142,6 +142,35 @@ function updateCell(td, rowVm, tableState) {
     td.textContent = newValue;
 }
 
+function updateItemNameCell(td, rowVm) {
+    const newEmpty = rowVm.item_name == null;
+    td.classList.toggle('empty', newEmpty);
+
+    if (newEmpty) {
+        td.textcontent = EMPTY;
+        return;
+    }
+
+    let nameSpan = td.querySelector('.cell-name');
+    let timeSpan = td.querySelector('.cell-timer');
+
+    if (!nameSpan) {
+        td.textContent = '';
+        nameSpan = document.createElement('span');
+        nameSpan.classList.add('.cell-name');
+        timerSpan = document.createElement('span');
+        timerSpan.classList.add('.cell-timer');
+        td.append(nameSpan, timerSpan);
+    }
+
+    if (nameSpan.textContent !== rowVm.item_name) {
+        nameSpan.textContent = rowVm.item_name;
+    }
+
+    timerSpan.dataset.fetchTime = rowVm.fetch_time;
+    timerSpan.textContent = formatElapsed(Date.now() - rowVm.fetch_time);
+}
+
 function updateRows(tableEl, rows, tableState) {
     const tbody = tableEl.querySelector('tbody');
     const domRows = tbody.querySelectorAll('tr');
