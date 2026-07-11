@@ -1,6 +1,6 @@
 import LoggerClient from './client.js';
 
-const log = new LoggerClient('http://10.110.20.120:3000');
+const log = new LoggerClient('http://192.168.88.14:3000');
 
 const table = await log.createTableStream({
     label: 'Pidor',

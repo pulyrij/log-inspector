@@ -94,12 +94,15 @@ tableStore.addTable({
 tableStore.updateSnapshot('tradeRD', [
     {
         index: 1,
+        fetch_time: 9833849879,
         item_name: 'Blackout Python',
         first_market: 'rustskins',
         first_price: 4.67,
         second_market: 'dmarket',
         second_price: 5.02,
-        profit: 13,
+        second_price_without_fee: 5.23,
+        profit_percent: 13,
+        profit_usd: 0.35,
         profit_sign: 'positive',
         count: 1
     },
