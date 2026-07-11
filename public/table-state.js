@@ -28,3 +28,12 @@ function getColumnType(columnKey, tableState) {
     const column = tableState.columns.get(columnKey);
     return column.class;
 }
+
+function getColumnValue(columnKey,rowVm, tableState) {
+    if (columnKey === 'profit' ) {
+        return tableState.profitMode === 'usd'
+            ? rowVm.profit_usd
+            : rowVm.profit_percent
+    }
+    return rowVm[columnKey];
+}

@@ -57,6 +57,7 @@ function createTableElement(config) {
         const th = document.createElement('th');
         th.scope = 'col';
         th.classList.add(column.key);
+        th.dataset.col = column.key;
         th.textContent = column.title;
         headerRow.appendChild(th);
     });
@@ -80,6 +81,9 @@ function createTableElement(config) {
     }
     table.appendChild(tbody);
 
+    const state = createTableState(config, table);
+    setTableState(id, state);
+
     return table;
 }
 
@@ -88,17 +92,20 @@ const EMPTY = '—';
 const formatters = {
     percent: (value) => value === EMPTY ? value : `${value}%`,
     price: (value) => value === EMPTY ? value : `${value}$`,
+    usd: (value) => value === EMPTY ? value : `${value}$`,
     default: (value) => value
 }
 
 const decorators = {
-    percent: (td, value, rowVm) => {
-        td.classList.remove('profit-positive', 'profit-negative', 'profit-zero');
-        if (value !== EMPTY) {
-            td.classList.add(`profit-${rowVm.profit_sign}`);
-        }
-    },
+    percent: decorateProfit,
+    usd: decorateProfit
+}
 
+function decorateProfit(td, value, rowVm) {
+    td.classList.remove('profit-positive', 'profit-negative', 'profit-zero');
+    if (value !== EMPTY) {
+        td.classList.add(`profit-${rowVm.profit_sign}`);
+    }
 }
 function getColumnType(td) {
     if (td.classList.contains('percent')) return 'percent';
@@ -106,11 +113,18 @@ function getColumnType(td) {
     return 'default';
 }
 
-function updateCell(td, rowVm) {
-    const type = getColumnType(td);
+function updateCell(td, rowVm, tableState) {
+    const columnKey = td.dataset.col;
+
+    if (columnKey === 'item_name') {
+        updateItemNameCell(td, rowVm);
+        return;
+    }
+    
+    const columnType = getColumnType(columnKey, tableState);
 
     const oldValue = td.textContent;
-    let newValue = rowVm[td.dataset.col] ?? EMPTY;
+    let newValue = getColumnValue(columnKey, rowVm, tableState  ) ?? EMPTY;
 
     const oldEmpty = oldValue === EMPTY;
     const newEmpty = newValue === EMPTY;
@@ -128,22 +142,46 @@ function updateCell(td, rowVm) {
     td.textContent = newValue;
 }
 
-function updateRows(tableEl, rows) {
+function updateRows(tableEl, rows, tableState) {
     const tbody = tableEl.querySelector('tbody');
     const domRows = tbody.querySelectorAll('tr');
+
+    const oldestFetchTime = null;   
 
     rows.forEach((rowVm, i) => {
         const tr = domRows[i];
         if (!tr) return;
 
         tr.dataset.name = rowVm.name
-        tr.querySelectorAll('td').forEach(td => updateCell(td, rowVm));
+        tr.querySelectorAll('td').forEach(td => updateCell(td, rowVm, tableState));
+
+        tableState.rows.set(i, rowVm);
+
+        if (oldestFetchTime === null || rowVm.fetch_time < oldestFetchTime) {
+            oldestFetchTime = rowVm.fetch_time;
+        }
     });
+
+    tableState.oldestFetchTime = oldestFetchTime;
 
     for (let i = rows.length; i < domRows.length; i++) {
         const tr = domRows[i];
         if (tr.dataset.name === '') continue;
         tr.dataset.name = '';
-        tr.querySelectorAll('td').forEach(td => updateCell(td, {}));
+        tr.querySelectorAll('td').forEach(td => updateCell(td, {}, tableState));
+
+        tableState.rows.delete(i);
     }
+}
+
+function formatElapsed(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+
+    if (totalSeconds < 60) return `${totalSeconds}s`;
+    
+    const totalMinutes = Math.floor(totalSeconds / 60);
+    if (totalMinutes < 60) return `${totalMinutes}m`;
+
+    const totalHours = Math.floor(totalMinutes / 60);
+    return `${totalHours}h`;
 }
