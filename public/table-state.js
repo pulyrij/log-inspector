@@ -37,3 +37,7 @@ function getColumnValue(columnKey,rowVm, tableState) {
     }
     return rowVm[columnKey];
 }
+
+export {  createTableState, setTableState,
+           getTableState, getColumnType,
+               getColumnValue              };

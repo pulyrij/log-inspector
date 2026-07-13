@@ -2,7 +2,7 @@ import store from './store.js';
 import tableStore from './table-store.js';
 import connect from './socket.js';
 import createLogElement from './log-creator.js';
-import renderTable from './table-renderer.js';
+import renderTable, { tableTimerSurvey } from './table-renderer.js';
 
 connect();
 
@@ -67,6 +67,7 @@ function processTables() {
 }
 
 requestAnimationFrame(processTables);
+tableTimerSurvey();
 
 function isAtBottom(el, threshold = 80) {
     return (el.scrollHeight - el.scrollTop - el.clientHeight) <= threshold;

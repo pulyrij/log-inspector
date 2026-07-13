@@ -1,3 +1,5 @@
+import { createTableState, setTableState, getTableState, getColumnType, getColumnValue } from './table-state.js';
+
 export default function renderTable(tableVm) {
     const { config, rows } = tableVm;
 
@@ -9,7 +11,17 @@ export default function renderTable(tableVm) {
         tableContainer.appendChild(table);
     }
 
-    updateRows(table, rows);
+    const tableState = getTableState(config.id);
+    updateRows(table, rows, tableState);
+}
+
+export function tableTimerSurvey() {
+    setInterval(() => {
+        document.querySelectorAll('[data-fetch-time]').forEach(el => {
+            const fetchTime = Number(el.dataset.fetchTime);
+            el.textContent = formatElapsed(Date.now() - fetchTime);
+        });
+    }, 1000);
 }
 
 const defaults = {
@@ -34,8 +46,16 @@ function createTableElement(config) {
     table.style.height = `${tableHeight}px`;
 
     const caption = document.createElement('caption');
-    caption.textContent = label;
     caption.style.height = `${captionHeight}px`;
+
+    const labelSpan = document.createElement('span');
+    labelSpan.textContent = label;
+    labelSpan.classList.add('.caption-label');
+
+    const timerSpan = document.createElement('span');
+    timerSpan.classList.add('.caption-timer');
+
+    caption.append(labelSpan, timerSpan);
     table.appendChild(caption);
 
     const colgroup = document.createElement('colgroup');
@@ -107,11 +127,6 @@ function decorateProfit(td, value, rowVm) {
         td.classList.add(`profit-${rowVm.profit_sign}`);
     }
 }
-function getColumnType(td) {
-    if (td.classList.contains('percent')) return 'percent';
-    if (td.classList.contains('price')) return 'price';
-    return 'default';
-}
 
 function updateCell(td, rowVm, tableState) {
     const columnKey = td.dataset.col;
@@ -133,11 +148,11 @@ function updateCell(td, rowVm, tableState) {
     
     td.classList.toggle('empty', newEmpty);
 
-    newValue = (formatters[type] ?? formatters.default)(newValue);
+    newValue = (formatters[columnType] ?? formatters.default)(newValue);
     if (newValue === oldValue) return;
 
     if (!newEmpty) {
-        decorators[type]?.(td, newValue, rowVm);
+        decorators[columnType]?.(td, newValue, rowVm);
     }
     td.textContent = newValue;
 }
@@ -152,7 +167,7 @@ function updateItemNameCell(td, rowVm) {
     }
 
     let nameSpan = td.querySelector('.cell-name');
-    let timeSpan = td.querySelector('.cell-timer');
+    let timerSpan = td.querySelector('.cell-timer');
 
     if (!nameSpan) {
         td.textContent = '';
@@ -175,7 +190,7 @@ function updateRows(tableEl, rows, tableState) {
     const tbody = tableEl.querySelector('tbody');
     const domRows = tbody.querySelectorAll('tr');
 
-    const oldestFetchTime = null;   
+    let oldestFetchTime = null;   
 
     rows.forEach((rowVm, i) => {
         const tr = domRows[i];
@@ -192,6 +207,15 @@ function updateRows(tableEl, rows, tableState) {
     });
 
     tableState.oldestFetchTime = oldestFetchTime;
+
+    const captionTimer = document.querySelector('.caption-timer');
+    if (oldestFetchTime !== null) {
+        captionTimer.dataset.fetchTime = oldestFetchTime;
+        captionTimer.textContent = formatElapsed(Date.now() - oldestFetchTime);
+    } else {
+        delete captionTimer.dataset.fetchTime;
+        captionTimer.textContent = '';
+    }
 
     for (let i = rows.length; i < domRows.length; i++) {
         const tr = domRows[i];
