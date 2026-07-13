@@ -82,6 +82,16 @@ function createTableElement(config) {
         headerRow.appendChild(th);
     });
 
+    headerRow.addEventListener('click', (event) => {
+        const th = event.target.closest('th');
+        if (!th || th.dataset.col !== 'profit') return;
+
+        const tableState = getTableState(id);
+        tableState.profitMode = tableState.profitMode === 'percent' ? 'usd' : 'percent';
+
+        rerenderProfitColumn(table, tableState);
+    });
+
     header.appendChild(headerRow);
     table.appendChild(header);
 
@@ -105,6 +115,19 @@ function createTableElement(config) {
     setTableState(id, state);
 
     return table;
+}
+
+function rerenderProfitColumn(table, tableState) {
+    const tbody = table.querySelector('tbody');
+    const rows = tbody.querySelectorAll('tr');
+
+    rows.forEach((tr, i) => {
+        const rowVm = tableState.rows.get(i);
+        if (!rowVm) return;
+
+        const td = tr.querySelector('[data-col="profit"]');
+        updateCell(td, rowVm, tableState);
+    });
 }
 
 const EMPTY = '—';
