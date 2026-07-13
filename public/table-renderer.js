@@ -15,7 +15,7 @@ export default function renderTable(tableVm) {
     updateRows(table, rows, tableState);
 }
 
-export function tableTimerSurvey() {
+export function startElapsedTimers() {
     setInterval(() => {
         document.querySelectorAll('[data-fetch-time]').forEach(el => {
             const fetchTime = Number(el.dataset.fetchTime);
@@ -135,6 +135,11 @@ function updateCell(td, rowVm, tableState) {
         updateItemNameCell(td, rowVm);
         return;
     }
+
+    if (columnKey === 'second_price') {
+        updateSecondPriceCell(td, rowVm);
+        return;
+    }
     
     const columnType = getColumnType(columnKey, tableState);
 
@@ -172,9 +177,9 @@ function updateItemNameCell(td, rowVm) {
     if (!nameSpan) {
         td.textContent = '';
         nameSpan = document.createElement('span');
-        nameSpan.classList.add('.cell-name');
+        nameSpan.classList.add('cell-name');
         timerSpan = document.createElement('span');
-        timerSpan.classList.add('.cell-timer');
+        timerSpan.classList.add('cell-timer');
         td.append(nameSpan, timerSpan);
     }
 
@@ -184,6 +189,42 @@ function updateItemNameCell(td, rowVm) {
 
     timerSpan.dataset.fetchTime = rowVm.fetch_time;
     timerSpan.textContent = formatElapsed(Date.now() - rowVm.fetch_time);
+}
+
+function updateSecondPriceCell(td, rowVm) {
+    const newEmpty = rowVm.second_price == null;
+    const oldEmpty = td.classList.contains('empty');
+
+    if (newEmpty && oldEmpty) return;
+
+    td.classList.toggle('empty', newEmpty);
+
+    if (newEmpty) {
+        td.textContent = EMPTY;
+        return;
+    }
+
+    let mainSpan = td.querySelector('.cell-price-main');
+    let subSpan = td.querySelector('.cell-price-sub');
+
+    if (!mainSpan) {
+        td.textContent = '';
+        mainSpan = document.createElement('span');
+        mainSpan.classList.add('cell-price-main');
+        subSpan = document.createElement('span');
+        subSpan.classList.add('cell-price-sub');
+        td.append(mainSpan, subSpan);
+    }
+
+    const mainText = formatters.price(rowVm.second_price);
+    if (mainSpan.textContent !== mainText) {
+        mainSpan.textContent = mainText;
+    }
+
+    const subText = formatters.price(rowVm.second_price_without_fee);
+    if (subSpan.textContent !== subText) {
+        subSpan.textContent = subText;
+    }
 }
 
 function updateRows(tableEl, rows, tableState) {
