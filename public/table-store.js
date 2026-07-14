@@ -40,114 +40,72 @@ class TableStore {
 }
 
 const tableStore = new TableStore();
-tableStore.addTable({
-    id: 'tradeRD',
-    label: 'Trade rustskins -> dmarket',
-    columns: [{
-        key: 'index',
-        title: 'I',
-        class: 'int',
-        width: 4
-    }, {
-        key: 'item_name',
-        title: 'Item',
-        class: 'long_name',
-        width: 43
-    }, {
-        key: 'first_market',
-        title: 'Market 1',
-        class: 'short_name',
-        width: 12
-    }, {
-        key: 'first_price',
-        title: 'Price 1',
-        class: 'price',
-        width: 8
-    }, {
-        key: 'second_market',
-        title: 'Market 2',
-        class: 'short_name',
-        width: 12
-    }, {
-        key: 'second_price',
-        title: 'Price 2',
-        class: 'price',
-        width: 8
-    }, {
-        key: 'profit',
-        title: 'Profit',
-        class: 'percent',
-        width: 9
-    }, {
-        key: 'count',
-        title: 'C',
-        class: 'int',
-        width: 4
-    }],
-    rowCount: 20,
-    options: {
-        captionHeight: 40,
-        headerHeight: 36,
-        rowHeight: 32
-    }
-});
-tableStore.updateSnapshot('tradeRD', [
-    {
-        index: 1,
-        fetch_time: 9833849879,
-        item_name: 'Blackout Python',
-        first_market: 'rustskins',
-        first_price: 4.67,
-        second_market: 'dmarket',
-        second_price: 5.02,
-        second_price_without_fee: 5.23,
-        profit_percent: 13,
-        profit_usd: 0.35,
-        profit_sign: 'positive',
-        count: 1
-    },
-    {
-        index: 2,
-        item_name: 'Large Candle Set',
-        first_market: 'rustskins',
-        first_price: 3.02,
-        second_market: 'dmarket',
-        second_price: 3.06,
-        profit: 0.33,
-        profit_sign: 'positive',
-        count: 1
-    },
-    {
-        index: 3,
-        item_name: 'Red Jacet',
-        first_market: 'rustskins',
-        first_price: 0.15,
-        second_market: 'dmarket',
-        second_price: 0.15,
-        profit: 0,
-        profit_sign: 'zero',
-        count: 22
-    },
-    {
-        index: 4,
-        item_name: 'Ninja AR',
-        first_market: 'rustskins',
-        first_price: 1.52,
-        second_market: 'dmarket',
-        second_price: 1.43,
-        profit: -7,
-        profit_sign: 'negative',
-        count: 1
-    }
-]);
 // tableStore.addTable({
-//     label: 'Trade2 lootfarm -> cstrade',
-//     columns: [1, 2, 3, 4],
-//     rowCount: 20
+//     id: 'tradeRD',
+//     label: 'Trade rustskins -> dmarket',
+//     columns: [{
+//         key: 'index',
+//         title: 'I',
+//         class: 'int',
+//         width: 4
+//     }, {
+//         key: 'item_name',
+//         title: 'Item',
+//         class: 'long_name',
+//         width: 43
+//     }, {
+//         key: 'first_market',
+//         title: 'Market 1',
+//         class: 'short_name',
+//         width: 12
+//     }, {
+//         key: 'first_price',
+//         title: 'Price 1',
+//         class: 'price',
+//         width: 8
+//     }, {
+//         key: 'second_market',
+//         title: 'Market 2',
+//         class: 'short_name',
+//         width: 12
+//     }, {
+//         key: 'second_price',
+//         title: 'Price 2',
+//         class: 'price',
+//         width: 8
+//     }, {
+//         key: 'profit',
+//         title: 'Profit',
+//         class: 'percent',
+//         width: 9
+//     }, {
+//         key: 'count',
+//         title: 'C',
+//         class: 'int',
+//         width: 4
+//     }],
+//     rowCount: 20,
+//     options: {
+//         captionHeight: 40,
+//         headerHeight: 36,
+//         rowHeight: 32
+//     }
 // });
-// tableStore.addTable({
-//     label: 'Trade3 dmarket -> rust skins',
-//     columns: [1, 2, 3, 4],
-//     rowCount: 20
-// });
+
+// tableStore.updateSnapshot('tradeRD', [
+//     {
+//         index: 1,
+//         fetch_time: 9833849879,
+//         item_name: 'Blackout Python',
+//         first_market: 'rustskins',
+//         first_price: 4.67,
+//         second_market: 'dmarket',
+//         second_price: 5.02,
+//         second_price_without_fee: 5.23,
+//         profit_percent: 13,
+//         profit_usd: 0.35,
+//         profit_sign: 'positive',
+//         count: 1
+//     }
+// ]);
 export default tableStore;
