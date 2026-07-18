@@ -26,7 +26,7 @@ class Engine{
         this.#store.push(logRecord);
 
         const viewModel = this.#createLogViewModel(logRecord);
-        this.#subscribers.forEach(cb => cb(viewModel));
+        this.#subscribers.forEach(cb => cb({type: 'LOG', payload: viewModel }));
 
 
         return {

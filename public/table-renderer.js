@@ -50,10 +50,10 @@ function createTableElement(config) {
 
     const labelSpan = document.createElement('span');
     labelSpan.textContent = label;
-    labelSpan.classList.add('.caption-label');
+    labelSpan.classList.add('caption-label');
 
     const timerSpan = document.createElement('span');
-    timerSpan.classList.add('.caption-timer');
+    timerSpan.classList.add('caption-timer');
 
     caption.append(labelSpan, timerSpan);
     table.appendChild(caption);
@@ -75,6 +75,7 @@ function createTableElement(config) {
 
     columns.forEach(column => {
         const th = document.createElement('th');
+        th.style.height = `${headerHeight}px`;
         th.scope = 'col';
         th.classList.add(column.key);
         th.dataset.col = column.key;
@@ -102,6 +103,7 @@ function createTableElement(config) {
         tr.style.height = `${rowHeight}px`;
         columns.forEach(column => {
             const td = document.createElement('td');
+            td.style.height = `${rowHeight}px`;
             td.dataset.col = column.key;
             td.classList.add(column.key, column.class, 'empty');
             td.textContent = '—';

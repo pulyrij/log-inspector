@@ -1,9 +1,17 @@
 .trade-table {
     border: 2px solid var(--color-meta);
+    font-family: 'Cascadia Code';
 }
+.trade-table caption, 
+.trade-table th,
+.trade-table td {
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
 caption {
     caption-side: top;
-    text-align: left;
+    position: relative;
     color: #ffffff;
 
     border-top: 2px solid var(--color-meta);
@@ -15,6 +23,14 @@ caption {
     font-size: 26px;
     font-weight: bold;
 }
+.caption-label {
+    position: absolute;
+    left: 12px;
+}
+.caption-timer {
+    position: absolute;
+    right: 12px;
+}
 
 td, th {
     border: 1px solid var(--color-meta);
@@ -22,6 +38,7 @@ td, th {
 th {
     color: #ffffff;
     font-weight: bold;
+    user-select: none;
 }
 td {
     color: #ffffff;
@@ -29,13 +46,38 @@ td {
     text-align: left;
     padding: 4px;
 }
+
 td.empty {
     color: #000000;
 }
+
 td.int {
     text-align: center;
     padding: 0;
 }
+
+td[data-col="item_name"] {
+    position: relative;
+}
+.cell-timer {
+    position: absolute;
+    right: 2px;
+    bottom: 2px;
+
+    font-size: 10px;
+}
+
+td[data-col="second_price"] {
+    position: relative;
+}
+.cell-price-sub {
+    position: absolute;
+    right: 2px;
+    bottom: 2px;
+
+    font-size: 10px;
+}
+
 td.profit.profit-positive {
     color: #02b802;
 }
