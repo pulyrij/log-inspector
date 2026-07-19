@@ -1,9 +1,18 @@
 .trade-table {
     border: 2px solid var(--color-meta);
+    border-collapse: collapse;
+    font-family: 'Cascadia Code';
 }
+.trade-table caption, 
+.trade-table th,
+.trade-table td {
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
 caption {
     caption-side: top;
-    text-align: left;
+    position: relative;
     color: #ffffff;
 
     border-top: 2px solid var(--color-meta);
@@ -15,6 +24,14 @@ caption {
     font-size: 26px;
     font-weight: bold;
 }
+.caption-label {
+    position: absolute;
+    left: 12px;
+}
+.caption-timer {
+    position: absolute;
+    right: 12px;
+}
 
 td, th {
     border: 1px solid var(--color-meta);
@@ -22,20 +39,61 @@ td, th {
 th {
     color: #ffffff;
     font-weight: bold;
+    user-select: none;
 }
+th {
+    font-size: 19px;
+}
+th[data-col="profit"] {
+    cursor: pointer;
+}
+
 td {
     color: #ffffff;
 
     text-align: left;
     padding: 4px;
 }
+
 td.empty {
     color: #000000;
 }
+td.short_name {
+    font-size: 17px;
+}
+
 td.int {
     text-align: center;
     padding: 0;
 }
+
+td[data-col="item_name"] {
+    position: relative;
+}
+.cell-timer {
+    position: absolute;
+    right: 2px;
+    bottom: 2px;
+
+    font-size: 10px;
+}
+
+td[data-col="second_price"] {
+    position: relative;
+}
+.cell-price-main {
+    position: absolute;
+    left: 2px;
+    top: 2px;
+}
+.cell-price-sub {
+    position: absolute;
+    right: 2px;
+    bottom: 1px;
+
+    font-size: 10px;
+}
+
 td.profit.profit-positive {
     color: #02b802;
 }
@@ -44,4 +102,16 @@ td.profit.profit-negative {
 }
 td.profit.profit-zero {
     color: #e7c323;
+}
+.first_market,
+.first_price {
+    color: #b87f7f
+}
+.second_market,
+th.second_price,
+.cell-price-main {
+    color: #93c599
+}
+.cell-price-sub {
+    color: #559760
 }
