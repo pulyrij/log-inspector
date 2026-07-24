@@ -44,7 +44,7 @@ class Engine{
     getTables() {
         return [...this.#tables.entries()].map(([id, table]) => ({
             config: { id, label: table.label, columns: table.columns, rowCount: table.rowCount },
-            lastSnapshot: table.lastSnapshot ?? null
+            lastSnapshot: table.lastSnapshot ?? null ? { id, rows: table.lastSnapshot } : null
         }));
     }
     #validateRawLog(log) {
@@ -181,7 +181,7 @@ class Engine{
         return crypto.createHash('md5').update(label).digest('hex').slice(0, 8);
     };
     receiveTable(setup) {
-        const { isValid, errors } = this.#validateTableSetup(setup);
+        const { isValid, alreadyExists, errors } = this.#validateTableSetup(setup);
 
         if (!isValid) {
             return {
@@ -194,7 +194,12 @@ class Engine{
 
         const id = this.#labelToId(label);
 
-
+        if (alreadyExists) {
+            return {
+                statusCode: 409,
+                body: { id, alert: `table '${label}' already exists` }
+            }
+        }
 
         this.#tables.set(id, { label, columns, rowCount });
 
@@ -209,9 +214,10 @@ class Engine{
     }
     #validateTableSetup(setup) {
         const errors = [];
+        let alreadyExists = false;
 
         const response = () => {
-            return { isValid: errors.length === 0, errors }
+            return { isValid: errors.length === 0, errors, alreadyExists }
         };
 
         if (typeof setup !== 'object' || setup === null) {
@@ -223,9 +229,8 @@ class Engine{
 
         if (typeof label !== 'string') {
             errors.push('label must be a string');
-        }
-        if (this.#tables.has(this.#labelToId(label))) {
-            errors.push(`table '${label}' already exists`);
+        } else if (this.#tables.has(this.#labelToId(label))) {
+            alreadyExists = true;
         }
         if (typeof rowCount !== 'number') {
             errors.push('rowCount must be a number');
@@ -296,9 +301,13 @@ class Engine{
         if (!this.#tables.has(id)) {
             errors.push('no such table created');
         }
-        if (!Array.isArray(rows) || rows.length === 0) {
+        if (!Array.isArray(rows)) {
             errors.push('rows must be an array');
             return response();
+        }
+        if (rows.length === 0) {
+            errors.push('rows must be not empty');
+            response();
         }
 
         return response();

@@ -274,7 +274,7 @@ function updateRows(tableEl, rows, tableState) {
 
     tableState.oldestFetchTime = oldestFetchTime;
 
-    const captionTimer = document.querySelector('.caption-timer');
+    const captionTimer = tableEl.querySelector('.caption-timer');
     if (oldestFetchTime !== null) {
         captionTimer.dataset.fetchTime = oldestFetchTime;
         captionTimer.textContent = formatElapsed(Date.now() - oldestFetchTime);

@@ -1,6 +1,6 @@
 {
   "name": "logger",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "logger.js",
   "type": "module",
   "scripts": {
@@ -9,7 +9,7 @@
   },
   "author": "pulyrij",
   "license": "ISC",
-  "description": "",
+  "description": "логає звичайні логи, логи помилок та малює красиві таблиці",
   "dependencies": {
     "express": "^5.2.1",
     "fs": "^0.0.1-security",
