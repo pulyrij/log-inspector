@@ -1,4 +1,6 @@
 :root {
+    --color-error-bg: #0c1122;
+
     --color-log-info-1: #34db3c;
     --color-log-info-2: #378034;
 
@@ -24,7 +26,7 @@
     font-weight: bold;
 }
 .layout.meta {
-    background-color: var(--color-meta);
+    background-color: var(--purple);
 }
 
 .log-header.alert.info time,
