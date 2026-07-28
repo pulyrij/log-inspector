@@ -1,35 +1,69 @@
 :root {
-    --font-main: system-ui;
-    --font-size: 14px;
+    --font-main: 'Cascadia Code';
+
+    --white: #ffffff;
+    --black: #000000;
+    --gray-transparent07: rgba(255, 255, 255, 0.07);
+    --gray-transparent12: rgba(255, 255, 255, 0.12);
 
     --color-bg: #010d25;
-    --color-log-container: #151f33;
-    --color-meta: #0f0c22;
-    --color-error-bg: #0c1122;
+    --color-container: #151f33;
+    --purple: #0f0c22;
+
+    --green: #02b802;
+    --yellow: #e7c323;
+    --red: #f01919;
+    --light-green: #93c599;
+    --mid-green: #559760;
+    --light-red: #b87f7f;
+
 }
 
 body {
     background-color: var(--color-bg);
 }
-#top-bar {
-    background-color: var(--color-log-container);
+#version {
+    font-size: 12px;
 }
-#view-main, #view-table {
-    scrollbar-color: var(--color-log-container) transparent;
+#top-bar,
+#log-container,
+.trade-table,
+caption {
+    background-color: var(--color-container);
 }
-#view-main::-webkit-scrollbar,
-#view-table::-webkit-scrollbar {
-    width: 12px;
+#version,
+#url,
+nav button,
+caption,
+th,
+td {
+    color: var(--white);
 }
-#view-main::-webkit-scrollbar-track,
-#view-table::-webkit-scrollbar-track {
-    background: transparent;
+nav button {
+    border-color: var(--white);
 }
-#view-main::-webkit-scrollbar-thumb,
-#view-table::-webkit-scrollbar-thumb {
-    background: var(--color-log-container);
-    border-radius: 999px;
+
+td.empty {
+    color: var(--black);
 }
-#log-container, .trade-table, caption {
-    background-color: var(--color-log-container);
+td.profit.profit-positive {
+    color: var(--green);
+}
+td.profit.profit-zero {
+    color: var(--yellow);
+}
+td.profit.profit-negative {
+    color: var(--red);
+}
+.first_market,
+.first_price {
+    color: var(--light-red);
+}
+.second_market,
+th.second_price,
+.cell-price-main {
+    color: var(--light-green);
+}
+.cell-price-sub {
+    color: var(--mid-green);
 }

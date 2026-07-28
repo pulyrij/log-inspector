@@ -8,26 +8,30 @@ connect();
 
 document.getElementById('url').textContent = window.location.href;
 
-const tabs = document.querySelectorAll('nav button');
+const tabLogs = document.querySelector('#tab-logs');
+const tabTables = document.querySelector('#tab-tables');
+const viewLogs = document.querySelector('#view-logs');
+const viewTables = document.querySelector('#view-tables');
 
-const viewMain = document.getElementById('view-main');
-const viewTable = document.getElementById('view-table');
+function showTab(tabName) {
+    const isLogs = tabName === 'logs';
 
-document.getElementById('tab-main').addEventListener('click', (el) => {
-    tabs.forEach(t => t.classList.remove('active'));
-    el.currentTarget.classList.add('active');
-    viewMain.hidden = false;
-    viewTable.hidden = true;
-});
-document.getElementById('tab-table').addEventListener('click', (el) => {
-    tabs.forEach(t => t.classList.remove('active'));
-    el.currentTarget.classList.add('active');
-    viewMain.hidden = true;
-    viewTable.hidden = false;
-});
+    tabLogs.classList.toggle('active', isLogs);
+    tabTables.classList.toggle('active', !isLogs);
+    viewLogs.hidden = !isLogs;
+    viewTables.hidden = isLogs;
 
-const scroller = document.getElementById('view-main');
+    sessionStorage.setItem('activeTab', tabName);
+}
 
+tabLogs.addEventListener('click', () => showTab('logs'));
+tabTables.addEventListener('click', () => showTab('tables'));
+
+const savedTab = sessionStorage.getItem('activeTab') || 'logs';
+showTab(savedTab);
+
+
+const scroller = document.getElementById('view-logs');
 const logContainer = document.getElementById('log-container');
 
 function processLogs() {
@@ -54,8 +58,9 @@ function processLogs() {
 
     requestAnimationFrame(processLogs);
 }
-
-requestAnimationFrame(processLogs);
+function isAtBottom(el, threshold = 80) {
+    return (el.scrollHeight - el.scrollTop - el.clientHeight) <= threshold;
+}
 
 function processTables() {
     const tables = tableStore.getPending();
@@ -66,9 +71,7 @@ function processTables() {
     requestAnimationFrame(processTables);
 }
 
+
+requestAnimationFrame(processLogs);
 requestAnimationFrame(processTables);
 startElapsedTimers();
-
-function isAtBottom(el, threshold = 80) {
-    return (el.scrollHeight - el.scrollTop - el.clientHeight) <= threshold;
-}

@@ -1,0 +1,16 @@
+#view-logs, #view-tables {
+    scrollbar-color: var(--color-container) transparent;
+}
+#view-logs::-webkit-scrollbar,
+#view-tables::-webkit-scrollbar {
+    width: 12px;
+}
+#view-logs::-webkit-scrollbar-track,
+#view-tables::-webkit-scrollbar-track {
+    background: transparent;
+}
+#view-logs::-webkit-scrollbar-thumb,
+#view-tables::-webkit-scrollbar-thumb {
+    background: var(--color-container);
+    border-radius: 999px;
+}

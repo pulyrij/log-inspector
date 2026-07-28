@@ -8,6 +8,7 @@
     border-radius: 4px;
     overflow: hidden;
 
+    font-family: var(--font-main);
     animation: log-in 200ms ease-out both;
 }
 .log-header,

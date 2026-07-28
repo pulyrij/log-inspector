@@ -232,6 +232,7 @@ class Engine{
         } else if (this.#tables.has(this.#labelToId(label))) {
             alreadyExists = true;
         }
+        
         if (typeof rowCount !== 'number') {
             errors.push('rowCount must be a number');
         }
