@@ -1,4 +1,4 @@
-import { createTableState, setTableState, getTableState, getColumnType, getColumnValue } from './table-state.js';
+import { createTableState, setTableState, getTableState, getColumnType, getColumnValue } from './storage/table-state.js';
 
 export default function renderTable(tableVm) {
     const { config, rows } = tableVm;

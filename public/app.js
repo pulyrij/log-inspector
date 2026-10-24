@@ -1,5 +1,5 @@
-import store from './store.js';
-import tableStore from './table-store.js';
+import store from './storage/store.js';
+import tableStore from './storage/table-store.js';
 import connect from './socket.js';
 import createLogElement from './log-creator.js';
 import renderTable, { startElapsedTimers } from './table-renderer.js';
@@ -58,8 +58,8 @@ function processLogs() {
 
     requestAnimationFrame(processLogs);
 }
-function isAtBottom(el, threshold = 80) {
-    return (el.scrollHeight - el.scrollTop - el.clientHeight) <= threshold;
+function isAtBottom(el, bottomAutoscrollDistancePx = 80) {
+    return (el.scrollHeight - el.scrollTop - el.clientHeight) <= bottomAutoscrollDistancePx;
 }
 
 function processTables() {

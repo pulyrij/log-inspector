@@ -1,5 +1,5 @@
-import store from './store.js';
-import tableStore from './table-store.js';
+import store from './storage/store.js';
+import tableStore from './storage/table-store.js';
 
 const PORT = 3000;
 const RETRY_DELAY = 10_000;
